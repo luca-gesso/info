@@ -2,6 +2,8 @@
 
 Inizia da **[GUIDA_STUDIO.md](GUIDA_STUDIO.md)**: schemi da memorizzare, errori classici e piano di studio.
 
+Per allenarti apri **`ripasso_interattivo.html`** nel browser: lezioni spiegate, quiz, "cosa stampa?", trova l'errore, completa il codice ed esercizi con timer.
+
 ## Contenuto
 
 | Cartella | Cosa c'è |

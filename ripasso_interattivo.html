@@ -1,0 +1,2432 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ripasso Informatica 4^</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: quaderno a quadretti; barra in alto con le sezioni, colonna di lettura stretta, codice in riquadri tipo editor */
+:root {
+  --paper: #f4f6fa; --surface: #ffffff; --ink: #18212f; --muted: #586377; --rule: #dbe2ec;
+  --grid: rgba(35, 80, 200, .055);
+  --accent: #2350c8; --accent-soft: #e5ebfb; --on-accent: #ffffff;
+  --red: #c02f39; --red-soft: #fbe8e9; --ok: #1b7a47; --ok-soft: #e2f3ea; --warn: #98600a; --warn-soft: #fbf0dc;
+  --code-bg: #eef2f8; --code-ink: #1d2738; --c-k: #7a2fb5; --c-s: #a24d17; --c-n: #0d7465; --c-c: #7a8598; --c-f: #2350c8;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #10151d; --surface: #161d28; --ink: #e3e8f1; --muted: #9aa4b6; --rule: #283244;
+  --grid: rgba(127, 157, 255, .05);
+  --accent: #86a2ff; --accent-soft: #1d2846; --on-accent: #0d1220;
+  --red: #ff7d85; --red-soft: #3a1c21; --ok: #63d398; --ok-soft: #14301f; --warn: #f1b558; --warn-soft: #382a12;
+  --code-bg: #0c1118; --code-ink: #dce4f1; --c-k: #c89dff; --c-s: #f0a774; --c-n: #6fd5c1; --c-c: #6b768a; --c-f: #91b0ff;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #10151d; --surface: #161d28; --ink: #e3e8f1; --muted: #9aa4b6; --rule: #283244;
+  --grid: rgba(127, 157, 255, .05);
+  --accent: #86a2ff; --accent-soft: #1d2846; --on-accent: #0d1220;
+  --red: #ff7d85; --red-soft: #3a1c21; --ok: #63d398; --ok-soft: #14301f; --warn: #f1b558; --warn-soft: #382a12;
+  --code-bg: #0c1118; --code-ink: #dce4f1; --c-k: #c89dff; --c-s: #f0a774; --c-n: #6fd5c1; --c-c: #6b768a; --c-f: #91b0ff;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font: 16px/1.6 var(--f-body);
+}
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+code, pre, .mono { font-family: var(--f-mono); font-size: .88em; }
+p code, li code, td code, .q code, .w code, .goal code, .task code, label code { background: var(--code-bg); padding: .08em .35em; border-radius: 5px; color: var(--code-ink); }
+a { color: var(--accent); }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* barra superiore */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); border-bottom: 1px solid var(--rule); }
+.top-in { max-width: 1100px; margin: 0 auto; padding: 12px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+.brand { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
+.brand h1 span { color: var(--accent); }
+.score { display: flex; gap: 6px; flex-wrap: wrap; font-size: .8rem; color: var(--muted); }
+.score b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.score .pill { background: var(--paper); border: 1px solid var(--rule); padding: 2px 8px; border-radius: 99px; }
+nav.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+nav.tabs::-webkit-scrollbar { display: none; }
+nav.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 8px 12px 9px; white-space: nowrap; color: var(--muted); font-weight: 700; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+nav.tabs button .n { font-weight: 400; font-size: .8em; color: var(--muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+
+main { max-width: 1100px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; }
+.panel-head { max-width: 760px; margin-bottom: 20px; display: grid; gap: 6px; }
+.panel-head h2 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 800; }
+.panel-head p { margin: 0; color: var(--muted); }
+
+/* lezioni */
+.lessons { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 32px; align-items: start; }
+.toc { position: sticky; top: 130px; display: grid; gap: 2px; font-size: .9rem; }
+.toc a { text-decoration: none; color: var(--muted); padding: 5px 10px; border-radius: 6px; display: flex; gap: 8px; }
+.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+.toc a .i { font-family: var(--f-mono); font-size: .8em; color: var(--accent); min-width: 1.6em; padding-top: .15em; }
+.toc .grp { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: 12px 10px 4px; font-weight: 700; }
+article.lesson { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: 24px clamp(16px, 4vw, 32px); margin-bottom: 20px; scroll-margin-top: 130px; min-width: 0; }
+article.lesson > * + * { margin-top: 14px; }
+.eyebrow { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); font-weight: 700; }
+article.lesson h2 { font-size: 1.5rem; font-weight: 800; margin-top: 4px; }
+article.lesson h3 { font-size: 1.1rem; font-weight: 600; margin-top: 22px; }
+article.lesson p, article.lesson li { max-width: 68ch; }
+article.lesson ul, article.lesson ol { padding-left: 1.3em; }
+article.lesson li + li { margin-top: 4px; }
+.note { border-radius: 8px; padding: 12px 14px; background: var(--accent-soft); font-size: .95rem; }
+.note.warn { background: var(--warn-soft); }
+.note.bad { background: var(--red-soft); }
+.note strong:first-child { display: block; font-family: var(--f-display); margin-bottom: 2px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--f-display); font-weight: 600; background: var(--paper); }
+
+/* codice */
+.codebox { position: relative; min-width: 0; }
+.codebox .lang { position: absolute; top: 0; right: 0; font: 600 .68rem var(--f-mono); text-transform: uppercase; letter-spacing: .08em; padding: 3px 8px; color: var(--muted); }
+pre.code { background: var(--code-bg); color: var(--code-ink); border-radius: 8px; padding: 14px 16px; overflow-x: auto; line-height: 1.55; margin: 0; tab-size: 4; border: 1px solid var(--rule); }
+.k { color: var(--c-k); font-weight: 600; } .s { color: var(--c-s); } .n { color: var(--c-n); } .c { color: var(--c-c); font-style: italic; } .f { color: var(--c-f); }
+
+/* schema array */
+.arr { display: flex; gap: 0; overflow-x: auto; padding: 4px 0; }
+.arr div { border: 1.5px solid var(--accent); border-right-width: 0; min-width: 54px; text-align: center; font-family: var(--f-mono); }
+.arr div:last-child { border-right-width: 1.5px; }
+.arr .v { padding: 8px 4px; font-weight: 600; }
+.arr .ix { font-size: .75rem; color: var(--muted); border-top: 1px dashed var(--rule); padding: 2px; }
+.arr .out { border-style: dashed; border-color: var(--red); color: var(--red); }
+.pal { display: flex; gap: 4px; flex-wrap: wrap; font-family: var(--f-mono); }
+.pal span { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); font-weight: 600; }
+.pal span.p { border-color: var(--accent); background: var(--accent-soft); }
+
+/* card di esercizio */
+.list { display: grid; gap: 16px; max-width: 820px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: 18px clamp(14px, 3vw, 22px); display: grid; gap: 12px; min-width: 0; }
+.card.ok { border-color: var(--ok); }
+.card.ko { border-color: var(--red); }
+.card .meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: .78rem; color: var(--muted); }
+.tag { font: 600 .7rem var(--f-mono); text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 5px; background: var(--paper); border: 1px solid var(--rule); color: var(--muted); }
+.tag.cpp { color: var(--c-f); } .tag.java { color: var(--c-s); }
+.card h3 { font-size: 1.05rem; font-weight: 600; }
+.q { font-size: 1.02rem; }
+.opts { display: grid; gap: 8px; }
+.opts.mono { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.opt { text-align: left; background: var(--paper); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; display: flex; gap: 10px; align-items: flex-start; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt .l { font: 600 .8rem var(--f-mono); color: var(--muted); padding-top: .15em; }
+.opts.mono .opt span:last-child { font-family: var(--f-mono); white-space: pre; font-size: .9rem; }
+.opt:disabled { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.wrong { border-color: var(--red); background: var(--red-soft); }
+.w { border-left: 3px solid var(--ok); padding: 8px 12px; background: var(--ok-soft); border-radius: 0 8px 8px 0; font-size: .95rem; }
+.w.ko { border-left-color: var(--red); background: var(--red-soft); }
+.w b.res { display: block; font-family: var(--f-display); }
+
+/* filtri e barra risultato */
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; max-width: 820px; }
+.chip { border: 1px solid var(--rule); background: var(--surface); border-radius: 99px; padding: 4px 12px; font-size: .88rem; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn { border: 1.5px solid var(--accent); background: var(--surface); color: var(--accent); border-radius: 8px; padding: 6px 12px; font-weight: 700; font-size: .9rem; }
+.btn.solid { background: var(--accent); color: var(--on-accent); }
+.btn.quiet { border-color: var(--rule); color: var(--muted); font-weight: 400; }
+.voto { margin-left: auto; display: flex; align-items: baseline; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 6px 12px; }
+.voto .big { font: 800 1.5rem var(--f-display); color: var(--red); font-variant-numeric: tabular-nums; }
+.voto small { color: var(--muted); }
+
+/* debug */
+.lines { background: var(--code-bg); border: 1px solid var(--rule); border-radius: 8px; overflow-x: auto; padding: 6px 0; font-family: var(--f-mono); font-size: .86rem; }
+.line { display: flex; width: 100%; min-width: max-content; border: 0; background: none; text-align: left; padding: 1px 12px 1px 0; color: var(--code-ink); line-height: 1.6; }
+.line .ln { width: 3em; text-align: right; padding-right: 12px; color: var(--c-c); user-select: none; flex: none; }
+.line code { font-size: 1em; white-space: pre; background: none; padding: 0; }
+.line:hover:not(:disabled) { background: var(--accent-soft); }
+.line.miss { background: var(--red-soft); text-decoration: line-through var(--red); }
+.line.hit { background: var(--ok-soft); box-shadow: inset 3px 0 var(--ok); }
+.line:disabled { cursor: default; }
+.goal { font-size: .95rem; }
+.goal b { color: var(--red); }
+
+/* completa */
+.blank { font: inherit; font-family: var(--f-mono); font-size: .9em; width: 6ch; min-width: 3ch; border: 0; border-bottom: 2px solid var(--accent); background: var(--surface); color: var(--ink); padding: 0 4px; border-radius: 4px 4px 0 0; text-align: center; }
+.blank.ok { border-color: var(--ok); background: var(--ok-soft); }
+.blank.ko { border-color: var(--red); background: var(--red-soft); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* esercizi */
+.task { font-size: 1rem; }
+.hint { background: var(--warn-soft); border-radius: 8px; padding: 8px 12px; font-size: .93rem; }
+.hint b { color: var(--warn); }
+textarea.mine { width: 100%; min-height: 150px; resize: vertical; font-family: var(--f-mono); font-size: .86rem; line-height: 1.5; background: var(--code-bg); color: var(--code-ink); border: 1px solid var(--rule); border-radius: 8px; padding: 12px; tab-size: 4; }
+.timer { font-variant-numeric: tabular-nums; }
+.timer.done { color: var(--red); border-color: var(--red); }
+label.done { display: flex; gap: 6px; align-items: center; font-size: .9rem; color: var(--muted); margin-left: auto; }
+
+/* verifica / checklist */
+.check li { list-style: none; margin-left: -1.3em; }
+.check label { display: flex; gap: 10px; align-items: flex-start; }
+.check input { margin-top: .35em; accent-color: var(--accent); }
+
+footer { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; color: var(--muted); font-size: .85rem; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+@media (max-width: 860px) {
+  .lessons { grid-template-columns: minmax(0, 1fr); }
+  .toc { position: static; display: flex; flex-wrap: wrap; gap: 6px; }
+  .toc .grp { display: none; }
+  .toc a { border: 1px solid var(--rule); background: var(--surface); padding: 3px 10px; border-radius: 99px; }
+  .toc a .t { display: none; }
+  .toc a .i { min-width: 0; padding: 0; }
+  .voto { margin-left: 0; }
+  .toc, article.lesson { scroll-margin-top: 150px; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } .opt, .chip, .line { transition: background .15s, border-color .15s; } }
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <h1>Ripasso Informatica <span>4^</span></h1>
+      <div class="score" id="score"></div>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-tab="lezioni">Lezioni</button>
+      <button role="tab" data-tab="quiz">Quiz<span class="n" id="n-quiz"></span></button>
+      <button role="tab" data-tab="output">Cosa stampa?<span class="n" id="n-output"></span></button>
+      <button role="tab" data-tab="debug">Trova l'errore<span class="n" id="n-debug"></span></button>
+      <button role="tab" data-tab="fill">Completa<span class="n" id="n-fill"></span></button>
+      <button role="tab" data-tab="esercizi">Esercizi da scrivere<span class="n" id="n-es"></span></button>
+      <button role="tab" data-tab="verifica">Il giorno della verifica</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ====================== LEZIONI ====================== -->
+<section id="p-lezioni" data-panel="lezioni">
+  <div class="panel-head">
+    <h2>Tutto quello che serve, spiegato da zero</h2>
+    <p>Leggi le lezioni in ordine. Alla fine di ognuna c'è una domanda veloce per controllare di aver capito. Poi passa alle schede di allenamento in alto.</p>
+  </div>
+  <div class="lessons">
+    <nav class="toc" aria-label="Indice delle lezioni">
+      <div class="grp">C++</div>
+      <a href="#l1"><span class="i">1</span><span class="t">Com'è fatto un programma</span></a>
+      <a href="#l2"><span class="i">2</span><span class="t">Tipi e operatori</span></a>
+      <a href="#l3"><span class="i">3</span><span class="t">Costanti e array</span></a>
+      <a href="#l4"><span class="i">4</span><span class="t">Funzioni</span></a>
+      <a href="#l5"><span class="i">5</span><span class="t">Cicli e menu</span></a>
+      <a href="#l6"><span class="i">6</span><span class="t">I 6 algoritmi sugli array</span></a>
+      <a href="#l7"><span class="i">7</span><span class="t">Esercizio completo: tensioni</span></a>
+      <div class="grp">Java</div>
+      <a href="#l8"><span class="i">8</span><span class="t">Da C++ a Java</span></a>
+      <a href="#l9"><span class="i">9</span><span class="t">Le stringhe</span></a>
+      <a href="#l10"><span class="i">10</span><span class="t">Algoritmi sulle stringhe</span></a>
+      <div class="grp">Teoria da verifica</div>
+      <a href="#l11"><span class="i">11</span><span class="t">Ricorsione</span></a>
+      <a href="#l12"><span class="i">12</span><span class="t">Come risolvere «cosa stampa?»</span></a>
+      <a href="#l13"><span class="i">13</span><span class="t">Debug: errori classici</span></a>
+    </nav>
+
+    <div>
+      <!-- L1 -->
+      <article class="lesson" id="l1">
+        <div class="eyebrow">C++ · Lezione 1</div>
+        <h2>Com'è fatto un programma C++</h2>
+        <p>Ogni programma che scriverai in verifica ha questa struttura. Impara a memoria le prime due righe e il <code>main</code>.</p>
+        <script type="text/x-code" data-lang="cpp">
+#include <iostream>     // libreria che contiene cin e cout
+using namespace std;    // così scrivo cout invece di std::cout
+
+int main() {            // il programma parte SEMPRE da qui
+    int eta;                              // dichiaro una variabile intera
+    cout << "Quanti anni hai? ";          // stampo a schermo
+    cin >> eta;                           // leggo da tastiera
+    cout << "Tra un anno: " << eta + 1 << endl;   // endl = vai a capo
+    return 0;                             // 0 = tutto è andato bene
+}
+        </script>
+        <h3>Le cose da sapere</h3>
+        <ul>
+          <li><code>cout &lt;&lt;</code> manda verso lo schermo. Puoi concatenare più pezzi: <code>cout &lt;&lt; "x = " &lt;&lt; x &lt;&lt; endl;</code></li>
+          <li><code>cin &gt;&gt;</code> prende dalla tastiera e mette nella variabile. Le frecce indicano la direzione dei dati.</li>
+          <li>Ogni istruzione finisce con <code>;</code>. Le graffe <code>{ }</code> raggruppano le istruzioni in un blocco.</li>
+          <li><code>//</code> inizia un commento. La prof chiede di commentare: una riga sopra ogni funzione che dice cosa fa basta e avanza.</li>
+          <li>Una variabile va <b>dichiarata</b> (tipo + nome) prima di usarla.</li>
+        </ul>
+        <div class="note"><strong>Ricorda la differenza con Java</strong>In Java non esistono <code>cout</code> e <code>&lt;&lt;</code>: si usa <code>System.out.println("x = " + x);</code>. Lo vediamo nella lezione 8.</div>
+      </article>
+
+      <!-- L2 -->
+      <article class="lesson" id="l2">
+        <div class="eyebrow">C++ · Lezione 2</div>
+        <h2>Tipi e operatori</h2>
+        <div class="tbl"><table>
+          <tr><th>Tipo</th><th>Cosa contiene</th><th>Esempio</th></tr>
+          <tr><td><code>int</code></td><td>numeri interi</td><td><code>int punti = 8;</code></td></tr>
+          <tr><td><code>double</code></td><td>numeri con la virgola (si scrive con il punto)</td><td><code>double v = 229.5;</code></td></tr>
+          <tr><td><code>char</code></td><td>un solo carattere, tra apici singoli</td><td><code>char c = 'a';</code></td></tr>
+          <tr><td><code>string</code></td><td>testo, tra virgolette doppie</td><td><code>string nome = "PRIMA";</code></td></tr>
+          <tr><td><code>bool</code></td><td>vero o falso</td><td><code>bool trovato = false;</code></td></tr>
+        </table></div>
+        <h3>La divisione: la trappola numero 1</h3>
+        <p>Se <b>entrambi</b> i numeri sono interi, la divisione è intera: la parte decimale viene <b>buttata</b> (non arrotondata).</p>
+        <div class="tbl"><table>
+          <tr><th>Espressione</th><th>Risultato</th><th>Perché</th></tr>
+          <tr><td><code>7 / 2</code></td><td><b>3</b></td><td>int / int → intero</td></tr>
+          <tr><td><code>7 % 2</code></td><td><b>1</b></td><td>resto della divisione</td></tr>
+          <tr><td><code>7.0 / 2</code></td><td><b>3.5</b></td><td>basta un double e diventa decimale</td></tr>
+          <tr><td><code>(double) 7 / 2</code></td><td><b>3.5</b></td><td>il <i>cast</i> trasforma 7 in 7.0 prima di dividere</td></tr>
+          <tr><td><code>(double) (7 / 2)</code></td><td><b>3</b></td><td>prima divide tra int (3), poi converte: troppo tardi!</td></tr>
+        </table></div>
+        <h3>Il resto <code>%</code> serve a un sacco di cose</h3>
+        <ul>
+          <li><code>n % 2 == 0</code> → n è pari</li>
+          <li><code>n % 10</code> → ultima cifra di n (352 % 10 = 2)</li>
+          <li><code>n / 10</code> → n senza l'ultima cifra (352 / 10 = 35)</li>
+          <li><code>n % k == 0</code> → n è multiplo di k</li>
+        </ul>
+        <h3>Gli altri operatori</h3>
+        <div class="tbl"><table>
+          <tr><th>Operatore</th><th>Significato</th></tr>
+          <tr><td><code>x += 3</code> &nbsp; <code>x -= 3</code> &nbsp; <code>x *= 2</code></td><td>x = x + 3, x = x − 3, x = x · 2</td></tr>
+          <tr><td><code>x++</code> &nbsp; <code>x--</code></td><td>aumenta / diminuisce di 1</td></tr>
+          <tr><td><code>==</code> &nbsp; <code>!=</code> &nbsp; <code>&lt;</code> &nbsp; <code>&lt;=</code> &nbsp; <code>&gt;</code> &nbsp; <code>&gt;=</code></td><td>uguale, diverso, minore, minore o uguale…</td></tr>
+          <tr><td><code>&amp;&amp;</code></td><td>E: vero solo se <b>entrambe</b> le condizioni sono vere</td></tr>
+          <tr><td><code>||</code></td><td>O: vero se <b>almeno una</b> è vera</td></tr>
+          <tr><td><code>!</code></td><td>NON: inverte vero e falso</td></tr>
+        </table></div>
+        <div class="note bad"><strong><code>=</code> non è <code>==</code></strong><code>x = 5</code> mette 5 in x. <code>x == 5</code> chiede «x vale 5?». Nell'<code>if</code> ci va <code>==</code>.</div>
+        <div class="mini" data-q="0"></div>
+        <div class="mini" data-q="5"></div>
+      </article>
+
+      <!-- L3 -->
+      <article class="lesson" id="l3">
+        <div class="eyebrow">C++ · Lezione 3</div>
+        <h2>Costanti e array</h2>
+        <p>Un <b>array</b> è una fila di variabili dello stesso tipo, con un nome solo e un numero (l'<b>indice</b>) per distinguerle. Nei tuoi esercizi: 8 tensioni, 7 temperature, 6 consumi.</p>
+        <script type="text/x-code" data-lang="cpp">
+const int N = 8;          // costante: la dimensione, scritta UNA volta sola
+double prima[N];          // 8 double: prima[0] ... prima[7]
+double dopo[N] = {0};     // tutti inizializzati a 0
+        </script>
+        <p>Ecco come sono fatti in memoria i valori di <code>prima</code> dopo l'inserimento:</p>
+        <div class="arr" aria-label="Schema dell'array con indici da 0 a 7">
+          <div><div class="v">230</div><div class="ix">[0]</div></div>
+          <div><div class="v">225</div><div class="ix">[1]</div></div>
+          <div><div class="v">218</div><div class="ix">[2]</div></div>
+          <div><div class="v">241</div><div class="ix">[3]</div></div>
+          <div><div class="v">235</div><div class="ix">[4]</div></div>
+          <div><div class="v">229</div><div class="ix">[5]</div></div>
+          <div><div class="v">210</div><div class="ix">[6]</div></div>
+          <div><div class="v">233</div><div class="ix">[7]</div></div>
+          <div class="out"><div class="v">??</div><div class="ix">[8] ✗</div></div>
+        </div>
+        <ul>
+          <li>Gli indici partono da <b>0</b> e arrivano a <b>N−1</b>. <code>prima[8]</code> <b>non esiste</b>.</li>
+          <li>Il «punto 1» per l'utente è <code>prima[0]</code>. Quando stampi, scrivi <code>i + 1</code>.</li>
+          <li>Per scorrere tutto l'array c'è <b>un solo</b> ciclo giusto: <code>for (int i = 0; i &lt; N; i++)</code>.</li>
+        </ul>
+        <h3>Perché la costante?</h3>
+        <p>Se domani i punti diventano 10, cambi solo <code>const int N = 10;</code>: cicli, media e dichiarazioni si aggiornano da soli. La prof lo scrive nei requisiti («le dimensioni sono gestite con una costante»). Se scrivi <code>8</code> sparso nel codice perdi punti anche se il programma funziona.</p>
+        <div class="note warn"><strong>Uscire dall'array</strong>In C++ nessuno ti avvisa: <code>v[8]</code> legge memoria a caso (valori «spazzatura») o fa crashare il programma. In Java invece il programma si ferma con <code>ArrayIndexOutOfBoundsException</code>.</div>
+        <div class="mini" data-q="6"></div>
+        <div class="mini" data-q="8"></div>
+      </article>
+
+      <!-- L4 -->
+      <article class="lesson" id="l4">
+        <div class="eyebrow">C++ · Lezione 4</div>
+        <h2>Funzioni</h2>
+        <p>Una funzione è un pezzo di programma con un nome, che puoi richiamare. In verifica la prof vuole <b>una funzione per ogni voce del menu</b>, richiamata dal main.</p>
+        <script type="text/x-code" data-lang="cpp">
+//  tipo restituito   nome    parametri
+    double            media   (double v[]) {
+        double somma = 0;
+        for (int i = 0; i < N; i++) {
+            somma += v[i];
+        }
+        return somma / N;     // restituisce il risultato a chi l'ha chiamata
+    }
+
+// void = non restituisce niente: fa qualcosa (qui stampa)
+void visualizzaMedie(double prima[], double dopo[]) {
+    cout << "Media PRIMA: " << media(prima) << endl;   // la chiamo
+    cout << "Media DOPO: "  << media(dopo)  << endl;   // la riuso!
+}
+        </script>
+        <h3>Restituisce o stampa?</h3>
+        <div class="tbl"><table>
+          <tr><th>La funzione…</th><th>Tipo</th><th>Esempi</th></tr>
+          <tr><td><b>calcola</b> un numero</td><td><code>double</code> / <code>int</code> + <code>return</code></td><td>media, contaFuori, posizioneMinimo</td></tr>
+          <tr><td><b>fa</b> qualcosa (stampa, legge)</td><td><code>void</code></td><td>inserisci, visualizzaMedie, confrontaPunti</td></tr>
+        </table></div>
+        <p>Il trucco per scrivere poco: le funzioni del menu (void) <b>richiamano</b> le funzioni di calcolo. Così <code>media</code> la scrivi una volta e la usi nella voce 3 e nella voce 4.</p>
+        <h3>Passaggio per valore e per riferimento</h3>
+        <script type="text/x-code" data-lang="cpp">
+void perValore(int x)      { x = 99; }   // lavora su una COPIA
+void perRiferimento(int &x) { x = 99; }   // lavora sulla variabile ORIGINALE
+
+int main() {
+    int a = 1, b = 1;
+    perValore(a);        // a resta 1
+    perRiferimento(b);   // b diventa 99
+}
+        </script>
+        <ul>
+          <li>Senza <code>&amp;</code> → la funzione riceve una <b>copia</b>: le modifiche spariscono alla fine.</li>
+          <li>Con <code>&amp;</code> → la funzione lavora sulla variabile vera del main.</li>
+          <li><b>Gli array fanno eccezione</b>: non vengono copiati, si passa il loro indirizzo. Per questo <code>inserisci(double v[])</code> riempie davvero l'array del main <b>senza</b> <code>&amp;</code>. Nelle <code>[]</code> del parametro non serve scrivere la dimensione.</li>
+        </ul>
+        <div class="note"><strong>Dove le scrivo?</strong><b>Sopra</b> il main. Il compilatore legge dall'alto: se usi una funzione prima di averla scritta ottieni <code>'media' was not declared in this scope</code>.</div>
+        <div class="mini" data-q="14"></div>
+        <div class="mini" data-q="15"></div>
+      </article>
+
+      <!-- L5 -->
+      <article class="lesson" id="l5">
+        <div class="eyebrow">C++ · Lezione 5</div>
+        <h2>Cicli e menu</h2>
+        <div class="tbl"><table>
+          <tr><th>Ciclo</th><th>Quando si usa</th></tr>
+          <tr><td><code>for (int i = 0; i &lt; N; i++)</code></td><td>sai quante volte: scorrere un array, una stringa</td></tr>
+          <tr><td><code>while (condizione) { … }</code></td><td>controlla <b>prima</b>: può non eseguire mai</td></tr>
+          <tr><td><code>do { … } while (condizione);</code></td><td>controlla <b>dopo</b>: esegue <b>almeno una volta</b> → perfetto per il menu</td></tr>
+        </table></div>
+        <h3>Lo scheletro del menu (impara questo a memoria)</h3>
+        <script type="text/x-code" data-lang="cpp">
+int main() {
+    double prima[N] = {0};
+    double dopo[N] = {0};
+    int scelta;
+
+    do {
+        cout << "1. Inserisci tensioni PRIMA" << endl;
+        cout << "2. Inserisci tensioni DOPO" << endl;
+        // ... una riga per ogni voce ...
+        cout << "0. Esci" << endl;
+        cout << "Scelta: ";
+        cin >> scelta;
+
+        switch (scelta) {
+            case 1: inserisci(prima, "PRIMA"); break;
+            case 2: inserisci(dopo, "DOPO"); break;
+            // ...
+            case 0: cout << "Arrivederci!" << endl; break;
+            default: cout << "Scelta non valida" << endl;
+        }
+    } while (scelta != 0);     // si ripete finché non scelgo 0
+
+    return 0;
+}
+        </script>
+        <ul>
+          <li>Il <b>do-while</b> mostra il menu subito, poi controlla se ripetere. Con un <code>while</code> normale <code>scelta</code> al primo controllo non avrebbe un valore.</li>
+          <li>Lo <b>switch</b> salta al <code>case</code> col valore di <code>scelta</code>.</li>
+          <li><b>break</b> esce dallo switch. Se lo dimentichi, continua a eseguire anche i case sotto (<i>fall-through</i>).</li>
+          <li><b>default</b> cattura tutto il resto (es. l'utente scrive 9).</li>
+          <li>Gli array si dichiarano <b>nel main, fuori dal do</b>: altrimenti verrebbero ricreati vuoti a ogni giro.</li>
+        </ul>
+        <div class="note"><strong>Consiglio da verifica</strong>Scrivi subito questo scheletro con tutti i case che chiamano funzioni ancora vuote, e <b>compila</b>. Poi riempi le funzioni una alla volta, compilando ogni volta. Così non ti ritrovi con 40 errori alla fine.</div>
+        <div class="mini" data-q="18"></div>
+        <div class="mini" data-q="19"></div>
+      </article>
+
+      <!-- L6 -->
+      <article class="lesson" id="l6">
+        <div class="eyebrow">C++ · Lezione 6</div>
+        <h2>I 6 algoritmi sugli array</h2>
+        <p>Tutte le voci dei menu della prof sono una di queste 6 ricette. Cambiano solo i nomi delle variabili.</p>
+
+        <h3>1 · Somma e media (accumulatore)</h3>
+        <script type="text/x-code" data-lang="cpp">
+double media(double v[]) {
+    double somma = 0;                       // l'accumulatore parte da 0 PRIMA del ciclo
+    for (int i = 0; i < N; i++) {
+        somma += v[i];                      // aggiungo ogni valore
+    }
+    return somma / N;                       // somma è double → divisione decimale
+}
+        </script>
+
+        <h3>2 · Contare con una condizione (contatore)</h3>
+        <script type="text/x-code" data-lang="cpp">
+int contaFuori(double v[], double min, double max) {
+    int cont = 0;
+    for (int i = 0; i < N; i++) {
+        if (v[i] < min || v[i] > max) {     // cambia SOLO questa condizione
+            cont++;
+        }
+    }
+    return cont;
+}
+        </script>
+        <div class="tbl"><table>
+          <tr><th>Richiesta</th><th>Condizione</th></tr>
+          <tr><td>sopra una soglia</td><td><code>v[i] &gt; soglia</code></td></tr>
+          <tr><td><b>fuori</b> da [min, max]</td><td><code>v[i] &lt; min || v[i] &gt; max</code></td></tr>
+          <tr><td><b>dentro</b> [min, max]</td><td><code>v[i] &gt;= min &amp;&amp; v[i] &lt;= max</code></td></tr>
+          <tr><td>insufficienti</td><td><code>v[i] &lt; 6</code></td></tr>
+          <tr><td>pari</td><td><code>v[i] % 2 == 0</code></td></tr>
+        </table></div>
+
+        <h3>3 · Minimo / massimo con posizione</h3>
+        <script type="text/x-code" data-lang="cpp">
+int posizioneMinimo(double v[]) {
+    int pos = 0;                            // ipotesi: il minimo è il primo
+    for (int i = 1; i < N; i++) {           // parto dal secondo
+        if (v[i] < v[pos]) {                // per il MASSIMO: >
+            pos = i;                        // ricordo DOVE sta
+        }
+    }
+    return pos;
+}
+
+// uso nel menu:
+int p = posizioneMinimo(prima);
+cout << "Minimo: " << prima[p] << " V al punto " << p + 1 << endl;
+        </script>
+        <p>Restituire la <b>posizione</b> è furbo: con la posizione hai anche il valore (<code>v[pos]</code>), mentre col solo valore non sapresti dove sta.</p>
+        <div class="note bad"><strong>Mai partire da 0</strong>Con <code>min = 0</code> e tensioni tutte sopra 200, nessun valore è minore di 0: il «minimo» resterebbe 0. Si parte sempre dal primo elemento.</div>
+
+        <h3>4 · Confronto delle medie</h3>
+        <script type="text/x-code" data-lang="cpp">
+double diff = media(dopo) - media(prima);
+cout << "Differenza: " << diff << endl;
+if (diff > 0)       cout << "Media piu' alta: DOPO" << endl;
+else if (diff < 0)  cout << "Media piu' alta: PRIMA" << endl;
+else                cout << "Medie uguali" << endl;     // non dimenticare il caso uguale!
+        </script>
+
+        <h3>5 · Confronto elemento per elemento</h3>
+        <script type="text/x-code" data-lang="cpp">
+for (int i = 0; i < N; i++) {
+    cout << "Punto " << i + 1 << ": differenza " << dopo[i] - prima[i] << endl;
+}
+        </script>
+
+        <h3>6 · Ricerca di un valore</h3>
+        <script type="text/x-code" data-lang="cpp">
+int cerca(double v[], double x) {
+    for (int i = 0; i < N; i++) {
+        if (v[i] == x) return i;        // trovato: esco subito
+    }
+    return -1;                          // DOPO il ciclo: non c'era
+}
+        </script>
+        <div class="mini" data-q="10"></div>
+        <div class="mini" data-q="11"></div>
+      </article>
+
+      <!-- L7 -->
+      <article class="lesson" id="l7">
+        <div class="eyebrow">C++ · Lezione 7</div>
+        <h2>Esercizio completo: le tensioni dell'impianto</h2>
+        <p>Ecco come affrontare l'esercizio da 10 punti, passo per passo, in circa 50 minuti.</p>
+        <ol>
+          <li><b>Leggi il testo e numera le voci</b> (1–7 + 0). Per ognuna scrivi a margine quale delle 6 ricette è: inserimento, media, confronto medie, confronto punti, conteggio, minimo con posizione.</li>
+          <li><b>Scrivi lo scheletro</b>: <code>#include</code>, <code>const int N = 8;</code>, il main con do-while e switch. Compila.</li>
+          <li><b>Scrivi le funzioni di calcolo</b> (media, contaFuori, posizioneMinimo) che restituiscono un valore.</li>
+          <li><b>Scrivi le funzioni del menu</b> (void) che leggono/stampano e chiamano quelle di calcolo.</li>
+          <li><b>Prova</b> con dati veri: 230 225 218 241 235 229 210 233. Controlla almeno la media a mano.</li>
+          <li><b>Commenta</b> e salva con il nome giusto: <code>cognome_esercizio1.cpp</code>.</li>
+        </ol>
+        <details>
+          <summary><b>Mostra il codice completo commentato</b></summary>
+          <script type="text/x-code" data-lang="cpp">
+#include <iostream>
+using namespace std;
+
+const int N = 8;   // numero di punti di presa
+
+// Media di un array di N elementi
+double media(double v[]) {
+    double somma = 0;
+    for (int i = 0; i < N; i++) somma += v[i];
+    return somma / N;
+}
+
+// Posizione del valore minimo
+int posizioneMinimo(double v[]) {
+    int posMin = 0;
+    for (int i = 1; i < N; i++)
+        if (v[i] < v[posMin]) posMin = i;
+    return posMin;
+}
+
+// Quanti valori sono fuori da [min, max]
+int contaFuori(double v[], double min, double max) {
+    int cont = 0;
+    for (int i = 0; i < N; i++)
+        if (v[i] < min || v[i] > max) cont++;
+    return cont;
+}
+
+// Voci 1 e 2: la stessa funzione per entrambi gli array
+void inserisci(double v[], string nome) {
+    cout << "Inserimento tensioni " << nome << endl;
+    for (int i = 0; i < N; i++) {
+        cout << "Punto " << i + 1 << " (V): ";
+        cin >> v[i];
+    }
+}
+
+// Voce 3
+void visualizzaMedie(double prima[], double dopo[]) {
+    cout << "Media PRIMA: " << media(prima) << " V" << endl;
+    cout << "Media DOPO : " << media(dopo) << " V" << endl;
+}
+
+// Voce 4
+void confrontaMedie(double prima[], double dopo[]) {
+    double mPrima = media(prima);
+    double mDopo = media(dopo);
+    cout << "Differenza (dopo - prima): " << mDopo - mPrima << " V" << endl;
+    if (mDopo > mPrima)      cout << "Media piu' alta: DOPO" << endl;
+    else if (mPrima > mDopo) cout << "Media piu' alta: PRIMA" << endl;
+    else                     cout << "Medie uguali" << endl;
+}
+
+// Voce 5
+void confrontaPunti(double prima[], double dopo[]) {
+    for (int i = 0; i < N; i++)
+        cout << "Punto " << i + 1 << ": prima " << prima[i] << " V, dopo " << dopo[i]
+             << " V, differenza " << dopo[i] - prima[i] << " V" << endl;
+}
+
+// Voce 6
+void contaFuoriIntervallo(double prima[], double dopo[]) {
+    double min, max;
+    cout << "Tensione minima (V): ";
+    cin >> min;
+    cout << "Tensione massima (V): ";
+    cin >> max;
+    cout << "Fuori intervallo PRIMA: " << contaFuori(prima, min, max) << endl;
+    cout << "Fuori intervallo DOPO : " << contaFuori(dopo, min, max) << endl;
+}
+
+// Voce 7
+void visualizzaMinimi(double prima[], double dopo[]) {
+    int p1 = posizioneMinimo(prima);
+    int p2 = posizioneMinimo(dopo);
+    cout << "Minimo PRIMA: " << prima[p1] << " V al punto " << p1 + 1 << endl;
+    cout << "Minimo DOPO : " << dopo[p2] << " V al punto " << p2 + 1 << endl;
+}
+
+int main() {
+    double prima[N] = {0};
+    double dopo[N] = {0};
+    int scelta;
+    do {
+        cout << "\n1. Inserisci PRIMA\n2. Inserisci DOPO\n3. Medie\n4. Confronta medie\n"
+             << "5. Confronta punti\n6. Fuori intervallo\n7. Minimi\n0. Esci\nScelta: ";
+        cin >> scelta;
+        switch (scelta) {
+            case 1: inserisci(prima, "PRIMA"); break;
+            case 2: inserisci(dopo, "DOPO"); break;
+            case 3: visualizzaMedie(prima, dopo); break;
+            case 4: confrontaMedie(prima, dopo); break;
+            case 5: confrontaPunti(prima, dopo); break;
+            case 6: contaFuoriIntervallo(prima, dopo); break;
+            case 7: visualizzaMinimi(prima, dopo); break;
+            case 0: cout << "Arrivederci!" << endl; break;
+            default: cout << "Scelta non valida" << endl;
+        }
+    } while (scelta != 0);
+    return 0;
+}
+          </script>
+        </details>
+        <div class="note"><strong>Stesso esercizio, nomi diversi</strong>Le temperature di Ferragosto (7 giorni, soglia 35 °C) sono <b>identiche</b>: <code>N</code> diventa 7, «punto» diventa «giorno», «fuori intervallo» diventa «sopra soglia». Se sai fare questo, sai fare quello.</div>
+      </article>
+
+      <!-- L8 -->
+      <article class="lesson" id="l8">
+        <div class="eyebrow">Java · Lezione 8</div>
+        <h2>Da C++ a Java</h2>
+        <p>La logica (if, for, while, switch, operatori) è <b>identica</b>. Cambia il «contorno».</p>
+        <div class="tbl"><table>
+          <tr><th></th><th>C++</th><th>Java</th></tr>
+          <tr><td>Stampare</td><td><code>cout &lt;&lt; "x = " &lt;&lt; x &lt;&lt; endl;</code></td><td><code>System.out.println("x = " + x);</code></td></tr>
+          <tr><td>Stampare senza a capo</td><td><code>cout &lt;&lt; x;</code></td><td><code>System.out.print(x);</code></td></tr>
+          <tr><td>Leggere</td><td><code>cin &gt;&gt; x;</code></td><td><code>x = in.nextInt();</code> / <code>in.nextLine();</code></td></tr>
+          <tr><td>Testo</td><td><code>string</code></td><td><code>String</code> (S maiuscola)</td></tr>
+          <tr><td>Vero/falso</td><td><code>bool</code></td><td><code>boolean</code></td></tr>
+          <tr><td>Array</td><td><code>int v[N];</code></td><td><code>int[] v = new int[N];</code></td></tr>
+          <tr><td>Lunghezza array</td><td>usi <code>N</code></td><td><code>v.length</code> (senza parentesi)</td></tr>
+          <tr><td>Costante</td><td><code>const int N = 8;</code></td><td><code>final int N = 8;</code></td></tr>
+          <tr><td>Funzioni</td><td>fuori da tutto, sopra il main</td><td><b>metodi</b> <code>public static</code> dentro la classe</td></tr>
+        </table></div>
+        <script type="text/x-code" data-lang="java">
+import java.util.Scanner;                 // serve per leggere da tastiera
+
+public class AnalisiFrase {               // DEVE chiamarsi come il file: AnalisiFrase.java
+
+    // metodo statico: restituisce un valore, come una funzione C++
+    public static int contaVocali(String frase) {
+        int cont = 0;
+        // ...
+        return cont;
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        System.out.print("Scrivi una frase: ");
+        String frase = in.nextLine();                      // legge tutta la riga
+        System.out.println("Vocali: " + contaVocali(frase));
+    }
+}
+        </script>
+        <ul>
+          <li>Il nome della classe <code>public</code> = nome del file. Se la prof vuole <code>rossi_esercizio2.java</code>, scrivi <code>public class rossi_esercizio2</code>.</li>
+          <li>I metodi chiamati dal main devono essere <code>static</code>.</li>
+          <li>Nel compito «Analisi di una frase» la frase può essere scritta direttamente nel codice: <code>analizza("Anna");</code>. Lo Scanner non è obbligatorio.</li>
+        </ul>
+        <div class="mini" data-q="23"></div>
+        <div class="mini" data-q="24"></div>
+      </article>
+
+      <!-- L9 -->
+      <article class="lesson" id="l9">
+        <div class="eyebrow">Java · Lezione 9</div>
+        <h2>Le stringhe</h2>
+        <p>Una <code>String</code> è una sequenza di caratteri, numerati da 0 come un array.</p>
+        <div class="arr" aria-label="La stringa Ciao Mondo carattere per carattere">
+          <div><div class="v">C</div><div class="ix">0</div></div><div><div class="v">i</div><div class="ix">1</div></div><div><div class="v">a</div><div class="ix">2</div></div><div><div class="v">o</div><div class="ix">3</div></div><div><div class="v">␣</div><div class="ix">4</div></div><div><div class="v">M</div><div class="ix">5</div></div><div><div class="v">o</div><div class="ix">6</div></div><div><div class="v">n</div><div class="ix">7</div></div><div><div class="v">d</div><div class="ix">8</div></div><div><div class="v">o</div><div class="ix">9</div></div>
+        </div>
+        <p><code>frase.length()</code> = 10 &nbsp;·&nbsp; <code>frase.charAt(0)</code> = <code>'C'</code> &nbsp;·&nbsp; ultimo carattere: <code>frase.charAt(frase.length() - 1)</code></p>
+        <div class="tbl"><table>
+          <tr><th>Metodo</th><th>Cosa fa</th><th>"Ciao Mondo" →</th></tr>
+          <tr><td><code>length()</code></td><td>numero di caratteri</td><td><code>10</code></td></tr>
+          <tr><td><code>charAt(i)</code></td><td>carattere in posizione i (un <code>char</code>)</td><td><code>charAt(1)</code> → <code>'i'</code></td></tr>
+          <tr><td><code>toLowerCase()</code></td><td>nuova stringa minuscola</td><td><code>"ciao mondo"</code></td></tr>
+          <tr><td><code>toUpperCase()</code></td><td>nuova stringa maiuscola</td><td><code>"CIAO MONDO"</code></td></tr>
+          <tr><td><code>trim()</code></td><td>toglie gli spazi all'inizio e alla fine</td><td><code>"  ok "</code> → <code>"ok"</code></td></tr>
+          <tr><td><code>replace(a, b)</code></td><td>sostituisce ogni a con b</td><td><code>replace(" ", "")</code> → <code>"CiaoMondo"</code></td></tr>
+          <tr><td><code>split(" ")</code></td><td>divide in un <b>array</b> di parole</td><td><code>{"Ciao", "Mondo"}</code></td></tr>
+          <tr><td><code>equals(altra)</code></td><td>stesso contenuto?</td><td><code>"Ciao".equals("ciao")</code> → <code>false</code></td></tr>
+        </table></div>
+        <h3>Le 4 trappole delle stringhe</h3>
+        <ol>
+          <li><b><code>char</code> vs <code>String</code></b>: <code>'a'</code> (apici singoli) è un carattere, <code>"a"</code> è una stringa. <code>charAt</code> dà un char, quindi <code>c == 'a'</code>.</li>
+          <li><b>Le stringhe non cambiano mai</b>: <code>frase.toLowerCase();</code> da solo non fa niente. Serve <code>frase = frase.toLowerCase();</code></li>
+          <li><b>Confronto</b>: <code>s1.equals(s2)</code>, mai <code>s1 == s2</code> (confronta se sono lo stesso oggetto, non il contenuto). Per i <b>char</b> invece <code>==</code> va benissimo.</li>
+          <li><b>length</b>: stringa <code>s.length()</code> con parentesi, array <code>v.length</code> senza.</li>
+        </ol>
+        <h3>Concatenazione: si legge da sinistra a destra</h3>
+        <div class="tbl"><table>
+          <tr><th>Codice</th><th>Risultato</th></tr>
+          <tr><td><code>"x" + 1 + 2</code></td><td><code>"x12"</code>: appena c'è una stringa, tutto diventa testo</td></tr>
+          <tr><td><code>1 + 2 + "x"</code></td><td><code>"3x"</code>: prima 1+2 tra numeri</td></tr>
+          <tr><td><code>"x" + (1 + 2)</code></td><td><code>"x3"</code>: le parentesi fanno prima la somma</td></tr>
+          <tr><td><code>'a' + 'b'</code></td><td><code>195</code>: due char si <b>sommano come numeri</b> (codici ASCII)</td></tr>
+          <tr><td><code>"" + 'a' + 'b'</code></td><td><code>"ab"</code></td></tr>
+        </table></div>
+        <div class="mini" data-q="27"></div>
+        <div class="mini" data-q="28"></div>
+      </article>
+
+      <!-- L10 -->
+      <article class="lesson" id="l10">
+        <div class="eyebrow">Java · Lezione 10</div>
+        <h2>Algoritmi sulle stringhe</h2>
+        <h3>Lo schema base: scorrere carattere per carattere</h3>
+        <script type="text/x-code" data-lang="java">
+String f = frase.toLowerCase();          // così A e a sono uguali
+for (int i = 0; i < f.length(); i++) {
+    char c = f.charAt(i);
+    // qui controllo c
+}
+        </script>
+        <div class="tbl"><table>
+          <tr><th>Voglio contare…</th><th>Condizione su <code>c</code></th></tr>
+          <tr><td>vocali</td><td><code>c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'</code></td></tr>
+          <tr><td>lettere</td><td><code>c &gt;= 'a' &amp;&amp; c &lt;= 'z'</code> (dopo toLowerCase)</td></tr>
+          <tr><td>consonanti</td><td>lettera <b>e</b> non vocale</td></tr>
+          <tr><td>maiuscole</td><td><code>c &gt;= 'A' &amp;&amp; c &lt;= 'Z'</code> (sulla frase <b>originale</b>!)</td></tr>
+          <tr><td>cifre</td><td><code>c &gt;= '0' &amp;&amp; c &lt;= '9'</code></td></tr>
+          <tr><td>spazi</td><td><code>c == ' '</code></td></tr>
+        </table></div>
+
+        <h3>Contare le parole</h3>
+        <script type="text/x-code" data-lang="java">
+public static int contaParole(String frase) {
+    String f = frase.trim();                 // via gli spazi ai bordi
+    if (f.length() == 0) return 0;           // frase vuota
+    String[] parole = f.split(" ");
+    int cont = 0;
+    for (int i = 0; i < parole.length; i++) {
+        if (parole[i].length() > 0) cont++;  // salto i "buchi" dei doppi spazi
+    }
+    return cont;
+}
+        </script>
+
+        <h3>Palindroma: due indici che si vengono incontro</h3>
+        <p>Dopo aver tolto spazi e maiuscole, confronto il primo con l'ultimo, il secondo con il penultimo, e così via. Alla prima coppia diversa: non è palindroma.</p>
+        <div class="pal" aria-label="La parola anna con gli indici sx e dx">
+          <span class="p">a</span><span>n</span><span>n</span><span class="p">a</span>
+          <span style="border:0;background:none;width:auto;padding:0 8px;font-weight:400;color:var(--muted)">sx=0 ↔ dx=3 ✓ &nbsp; poi sx=1 ↔ dx=2 ✓ &nbsp; poi sx ≥ dx: stop → true</span>
+        </div>
+        <script type="text/x-code" data-lang="java">
+public static boolean ePalindroma(String frase) {
+    String f = frase.toLowerCase().replace(" ", "");
+    int sx = 0;
+    int dx = f.length() - 1;
+    while (sx < dx) {
+        if (f.charAt(sx) != f.charAt(dx)) {
+            return false;            // trovata una differenza
+        }
+        sx++;
+        dx--;
+    }
+    return true;                     // nessuna differenza
+}
+        </script>
+
+        <h3>Costruire una nuova stringa (es. invertire)</h3>
+        <script type="text/x-code" data-lang="java">
+public static String inverti(String frase) {
+    String r = "";                                   // parto vuota
+    for (int i = frase.length() - 1; i >= 0; i--) {  // dall'ultimo al primo
+        r = r + frase.charAt(i);
+    }
+    return r;
+}
+// palindroma in versione facile:  f.equals(inverti(f))
+        </script>
+
+        <h3>Trovare la parola più lunga</h3>
+        <script type="text/x-code" data-lang="java">
+String[] parole = frase.trim().split(" ");
+String max = parole[0];                       // come il massimo negli array!
+for (int i = 1; i < parole.length; i++) {
+    if (parole[i].length() > max.length()) max = parole[i];
+}
+        </script>
+
+        <h3>Il main dell'esercizio: richiama tutto su più frasi</h3>
+        <script type="text/x-code" data-lang="java">
+public static void analizza(String frase) {
+    System.out.println("Frase: \"" + frase + "\"");     // \" stampa le virgolette
+    System.out.println("  Vocali: " + contaVocali(frase));
+    System.out.println("  Parole: " + contaParole(frase));
+    System.out.println("  Palindroma: " + ePalindroma(frase));
+}
+
+public static void main(String[] args) {
+    analizza("Ciao Mondo");
+    analizza("I topi non avevano nipoti");
+}
+        </script>
+        <div class="mini" data-q="30"></div>
+      </article>
+
+      <!-- L11 -->
+      <article class="lesson" id="l11">
+        <div class="eyebrow">Teoria · Lezione 11</div>
+        <h2>Ricorsione</h2>
+        <p>Una funzione è <b>ricorsiva</b> quando richiama sé stessa su un problema più piccolo. Ha sempre due parti:</p>
+        <ul>
+          <li><b>Caso base</b>: quando fermarsi, restituendo un valore senza richiamarsi.</li>
+          <li><b>Passo ricorsivo</b>: richiamarsi con un valore più vicino al caso base (di solito <code>n - 1</code> o <code>n / 10</code>).</li>
+        </ul>
+        <script type="text/x-code" data-lang="cpp">
+int misterioso(int n) {
+    if (n <= 1) return 1;               // caso base
+    return n * misterioso(n - 1);       // passo ricorsivo
+}
+        </script>
+        <h3>Come tracciarla: la «scala»</h3>
+        <p>Scendi scrivendo ogni chiamata finché arrivi al caso base, poi risali calcolando.</p>
+        <pre class="code">misterioso(4) = 4 * misterioso(3)
+              = 4 * 3 * misterioso(2)
+              = 4 * 3 * 2 * misterioso(1)     ← caso base: vale 1
+              = 4 * 3 * 2 * 1
+              = 24</pre>
+        <p>In verifica scrivi proprio questa scala come «motivazione»: è quello che la prof vuole vedere.</p>
+        <h3>Le ricorsive che escono più spesso</h3>
+        <div class="tbl"><table>
+          <tr><th>Codice</th><th>Calcola</th><th>Esempio</th></tr>
+          <tr><td><code>if (n &lt;= 1) return 1;<br>return n * f(n-1);</code></td><td>fattoriale</td><td>f(4) = 24</td></tr>
+          <tr><td><code>if (n == 0) return 0;<br>return n + f(n-1);</code></td><td>somma 1…n</td><td>f(5) = 15</td></tr>
+          <tr><td><code>if (e == 0) return 1;<br>return b * f(b, e-1);</code></td><td>potenza b<sup>e</sup></td><td>f(2,3) = 8</td></tr>
+          <tr><td><code>if (n &lt; 10) return n;<br>return n%10 + f(n/10);</code></td><td>somma delle cifre</td><td>f(352) = 10</td></tr>
+          <tr><td><code>if (n &lt; 10) return 1;<br>return 1 + f(n/10);</code></td><td>numero di cifre</td><td>f(4071) = 4</td></tr>
+        </table></div>
+        <h3>Trappola: stampa prima o dopo la chiamata?</h3>
+        <script type="text/x-code" data-lang="cpp">
+void a(int n) { if (n == 0) return; cout << n << " "; a(n - 1); }   // a(3) → 3 2 1
+void b(int n) { if (n == 0) return; b(n - 1); cout << n << " "; }   // b(3) → 1 2 3
+        </script>
+        <p>In <code>b</code> la stampa avviene «al ritorno», quando le chiamate più piccole hanno già finito: quindi l'ordine è al contrario.</p>
+        <div class="note warn"><strong>Senza caso base</strong>La funzione si richiama all'infinito: ogni chiamata occupa memoria nello <i>stack</i> finché questa finisce → <b>stack overflow</b>, il programma va in crash.</div>
+        <div class="mini" data-q="32"></div>
+        <div class="mini" data-q="34"></div>
+      </article>
+
+      <!-- L12 -->
+      <article class="lesson" id="l12">
+        <div class="eyebrow">Teoria · Lezione 12</div>
+        <h2>Come risolvere «cosa stampa?»</h2>
+        <ol>
+          <li><b>Controlla prima che compili.</b> Graffe chiuse? <code>&lt;&lt;</code> in Java? Se c'è un errore, scrivilo: è parte della risposta.</li>
+          <li><b>Fai la tabella di traccia</b>: una colonna per ogni variabile, una riga per ogni giro.</li>
+          <li><b>Guarda dove sta la stampa</b>: dentro il ciclo stampa a ogni giro, fuori una volta sola alla fine.</li>
+          <li><b>Scrivi l'output esatto</b>, con spazi e a capo.</li>
+        </ol>
+        <h3>Esempio: il programma della tua verifica</h3>
+        <script type="text/x-code" data-lang="java">
+int somma = 0;
+for (int i = 1; i <= 5; i++) {
+    if (i % 2 == 0) somma += i;
+    else            somma -= i;
+}
+System.out.println("somma finale: " + somma);
+        </script>
+        <div class="tbl"><table>
+          <tr><th>i</th><th>i % 2 == 0?</th><th>operazione</th><th>somma</th></tr>
+          <tr><td>–</td><td>–</td><td>inizio</td><td>0</td></tr>
+          <tr><td>1</td><td>no</td><td>somma −= 1</td><td>−1</td></tr>
+          <tr><td>2</td><td>sì</td><td>somma += 2</td><td>1</td></tr>
+          <tr><td>3</td><td>no</td><td>somma −= 3</td><td>−2</td></tr>
+          <tr><td>4</td><td>sì</td><td>somma += 4</td><td>2</td></tr>
+          <tr><td>5</td><td>no</td><td>somma −= 5</td><td><b>−3</b></td></tr>
+        </table></div>
+        <p>Output: <code>somma finale: -3</code>. Motivazione: i pari (2+4 = 6) vengono sommati e i dispari (1+3+5 = 9) sottratti: 6 − 9 = −3.</p>
+        <div class="note warn"><strong>Nel testo che avevi tu</strong>La <code>println</code> era indentata <b>dentro</b> il for e mancava una graffa: scritto così non compila. Se la println fosse dentro il ciclo, stamperebbe 5 righe: −1, 1, −2, 2, −3. Scrivere entrambe le osservazioni fa una bella figura.</div>
+        <h3>Le trappole preferite dai prof</h3>
+        <ul>
+          <li><code>i &lt;= 5</code> o <code>i &lt; 5</code>? Conta bene quanti giri.</li>
+          <li><code>i += 2</code>, <code>i -= 3</code>: il passo non è sempre 1.</li>
+          <li>Il <code>while</code> controlla prima di moltiplicare: il valore finale <b>supera</b> il limite.</li>
+          <li>Divisione tra int: <code>5 / 2 = 2</code>.</li>
+          <li>Java: <code>"x" + 1 + 2</code> = <code>"x12"</code>.</li>
+          <li>Switch senza break: esegue i case successivi.</li>
+        </ul>
+      </article>
+
+      <!-- L13 -->
+      <article class="lesson" id="l13">
+        <div class="eyebrow">Teoria · Lezione 13</div>
+        <h2>Debug: gli errori classici</h2>
+        <p>Nell'esercizio di debug devi fare tre cose: <b>trovare</b> la riga sbagliata, <b>spiegare</b> perché non funziona, <b>riscrivere</b> la versione corretta. Quasi sempre è uno di questi:</p>
+        <div class="tbl"><table>
+          <tr><th>Errore</th><th>Cosa succede</th><th>Correzione</th></tr>
+          <tr><td><code>i &lt;= N</code> / <code>i &lt;= v.length</code></td><td>Java: <code>ArrayIndexOutOfBoundsException</code>. C++: valore spazzatura</td><td><code>i &lt; N</code></td></tr>
+          <tr><td><code>void scambia(int a, int b)</code></td><td>modifica solo le copie</td><td><code>int &amp;a, int &amp;b</code></td></tr>
+          <tr><td><code>int somma; … somma / N</code></td><td>media troncata (6 invece di 6.67)</td><td><code>double somma</code></td></tr>
+          <tr><td><code>min = 0</code> / <code>max = 0</code></td><td>sbagliato con valori tutti positivi / tutti negativi</td><td><code>min = v[0]</code></td></tr>
+          <tr><td><code>s == "admin"</code> (Java)</td><td>non entra mai nell'if</td><td><code>s.equals("admin")</code></td></tr>
+          <tr><td><code>"…" &lt;&lt; x</code> (Java)</td><td>errore di compilazione</td><td><code>"…" + x</code></td></tr>
+          <tr><td><code>if (x = 0)</code></td><td>assegna invece di confrontare</td><td><code>==</code></td></tr>
+          <tr><td><code>if (…);</code> / <code>for (…);</code></td><td>il corpo è eseguito sempre / una volta</td><td>togli il <code>;</code></td></tr>
+          <tr><td>manca <code>break</code></td><td>esegue anche il case dopo</td><td>aggiungi <code>break;</code></td></tr>
+          <tr><td>manca <code>return</code></td><td>valore a caso</td><td><code>return …;</code></td></tr>
+          <tr><td><code>&amp;&amp;</code> invece di <code>||</code></td><td>condizione impossibile, conta sempre 0</td><td>«fuori» usa <code>||</code></td></tr>
+          <tr><td><code>frase.toLowerCase();</code></td><td>la frase non cambia</td><td><code>frase = frase.toLowerCase();</code></td></tr>
+          <tr><td>metodo senza <code>static</code></td><td>«non-static method cannot be referenced…»</td><td><code>public static</code></td></tr>
+          <tr><td>ricorsione senza caso base</td><td>stack overflow</td><td><code>if (n &lt;= 1) return 1;</code></td></tr>
+        </table></div>
+        <h3>I messaggi del compilatore, tradotti</h3>
+        <div class="tbl"><table>
+          <tr><th>Messaggio</th><th>Vuol dire</th></tr>
+          <tr><td><code>expected ';' before …</code></td><td>manca un punto e virgola sulla riga <b>prima</b></td></tr>
+          <tr><td><code>'x' was not declared in this scope</code></td><td>variabile/funzione non dichiarata, scritta male, o funzione messa sotto il main</td></tr>
+          <tr><td><code>cannot find symbol</code> (Java)</td><td>come sopra: nome sbagliato (attenzione alle maiuscole: <code>string</code> vs <code>String</code>)</td></tr>
+          <tr><td><code>class X is public, should be declared in a file named X.java</code></td><td>nome classe ≠ nome file</td></tr>
+          <tr><td><code>missing return statement</code></td><td>una funzione non-void non restituisce in tutti i casi</td></tr>
+          <tr><td><code>incompatible types: possible lossy conversion from double to int</code></td><td>stai mettendo un decimale in un int</td></tr>
+        </table></div>
+        <div class="mini" data-q="35"></div>
+        <div class="mini" data-q="36"></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== QUIZ ====================== -->
+<section data-panel="quiz" hidden>
+  <div class="panel-head">
+    <h2>Quiz</h2>
+    <p>Scegli la risposta: vedi subito se è giusta e perché. Il voto in alto a destra è calcolato sulle risposte date, come in una verifica.</p>
+  </div>
+  <div class="bar" id="quiz-bar"></div>
+  <div class="list" id="quiz-list"></div>
+</section>
+
+<section data-panel="output" hidden>
+  <div class="panel-head">
+    <h2>Cosa stampa?</h2>
+    <p>Prima fai la traccia su un foglio, poi scegli. Ogni programma è stato compilato ed eseguito davvero: l'output giusto è quello reale.</p>
+  </div>
+  <div class="bar" id="output-bar"></div>
+  <div class="list" id="output-list"></div>
+</section>
+
+<section data-panel="debug" hidden>
+  <div class="panel-head">
+    <h2>Trova l'errore</h2>
+    <p>Leggi cosa dovrebbe fare il programma e <b>clicca sulla riga sbagliata</b>. Prima di guardare la soluzione, prova a dire a voce perché è sbagliata e come la correggeresti.</p>
+  </div>
+  <div class="bar" id="debug-bar"></div>
+  <div class="list" id="debug-list"></div>
+</section>
+
+<section data-panel="fill" hidden>
+  <div class="panel-head">
+    <h2>Completa il codice</h2>
+    <p>Scrivi nelle caselle il pezzo mancante, poi premi «Controlla». Gli spazi non contano.</p>
+  </div>
+  <div class="bar" id="fill-bar"></div>
+  <div class="list" id="fill-list"></div>
+</section>
+
+<section data-panel="esercizi" hidden>
+  <div class="panel-head">
+    <h2>Esercizi da scrivere</h2>
+    <p>Questa è la pratica vera. Avvia il timer, scrivi la soluzione nel riquadro (o nel tuo editor, come in laboratorio), usa i suggerimenti solo se ti blocchi, poi confronta con la soluzione. Gli ultimi due sono prove complete da verifica.</p>
+  </div>
+  <div class="bar" id="es-bar"></div>
+  <div class="list" id="es-list"></div>
+</section>
+
+<!-- ====================== VERIFICA ====================== -->
+<section data-panel="verifica" hidden>
+  <div class="panel-head">
+    <h2>Il giorno della verifica</h2>
+    <p>135 minuti, PC senza internet. Ecco come usarli.</p>
+  </div>
+  <div class="list">
+    <div class="card">
+      <h3>Come dividere il tempo</h3>
+      <div class="tbl"><table>
+        <tr><th>Minuti</th><th>Cosa fare</th><th>Punti</th></tr>
+        <tr><td>0–5</td><td>Leggi <b>tutto</b> il compito. Scrivi i nomi dei file.</td><td></td></tr>
+        <tr><td>5–55</td><td>Esercizio 1 C++ (menu + array)</td><td>10</td></tr>
+        <tr><td>55–95</td><td>Esercizio 2 Java (stringhe)</td><td>10</td></tr>
+        <tr><td>95–115</td><td>Esercizio 3 Debug</td><td>6</td></tr>
+        <tr><td>115–125</td><td>Cosa stampa / domande</td><td>4</td></tr>
+        <tr><td>125–135</td><td>Ricontrolla, commenta, <b>salva</b></td><td></td></tr>
+      </table></div>
+      <p class="goal">Se un esercizio ti blocca per più di 10 minuti, <b>passa al successivo</b> e torna dopo. Debug e «cosa stampa» sono punti veloci: non sacrificarli.</p>
+    </div>
+    <div class="card">
+      <h3>Se ti blocchi</h3>
+      <ul>
+        <li><b>Non compila?</b> Leggi il <b>primo</b> errore (gli altri spesso sono conseguenze). Guarda anche la riga prima.</li>
+        <li><b>Una funzione non ti viene?</b> Lasciala scritta a metà con un commento che spiega l'idea: <code>// qui dovrei contare i valori fuori intervallo con un ciclo e ||</code>. Vale più di niente.</li>
+        <li><b>Non sai cosa stampa?</b> Tabella di traccia, una riga per giro. Sempre.</li>
+        <li><b>Commenta per tutto il tempo</b>, non alla fine: una riga sopra ogni funzione.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Checklist prima di consegnare</h3>
+      <ul class="check" id="checklist">
+        <li><label><input type="checkbox" id="ck1"> Il nome del file è <code>cognome_esercizioX</code> e in Java la classe ha lo stesso nome</label></li>
+        <li><label><input type="checkbox" id="ck2"> C'è <code>const int N</code> e non ho scritto il numero sparso nel codice</label></li>
+        <li><label><input type="checkbox" id="ck3"> Ogni voce del menu chiama una funzione diversa</label></li>
+        <li><label><input type="checkbox" id="ck4"> Ogni case ha il suo <code>break</code>, c'è il <code>default</code></label></li>
+        <li><label><input type="checkbox" id="ck5"> Il menu si ripete finché non scelgo 0 (do-while)</label></li>
+        <li><label><input type="checkbox" id="ck6"> Le medie usano <code>double</code>, non int</label></li>
+        <li><label><input type="checkbox" id="ck7"> Il minimo/massimo parte da <code>v[0]</code> e stampo la posizione <code>+ 1</code></label></li>
+        <li><label><input type="checkbox" id="ck8"> Tutti i cicli sono <code>i &lt; N</code> (non <code>&lt;=</code>)</label></li>
+        <li><label><input type="checkbox" id="ck9"> In Java: metodi <code>static</code>, <code>equals</code> per le stringhe, <code>+</code> per stampare</label></li>
+        <li><label><input type="checkbox" id="ck10"> Il main Java richiama tutti i metodi su almeno due frasi</label></li>
+        <li><label><input type="checkbox" id="ck11"> Ho provato il programma con dati veri</label></li>
+        <li><label><input type="checkbox" id="ck12"> Ogni funzione ha un commento sopra. Ho salvato.</label></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Piano per stasera</h3>
+      <ol>
+        <li>Lezioni 1–7 (C++), poi riscrivi le tensioni <b>da zero senza guardare</b>.</li>
+        <li>Lezioni 8–10 (Java), poi l'esercizio «Analisi frase» da zero.</li>
+        <li>Lezioni 11–13, poi tutte le schede: Quiz, Cosa stampa?, Trova l'errore, Completa.</li>
+        <li>Esercizi da scrivere, finendo con le due prove complete <b>con il timer</b>.</li>
+        <li>Rifai solo le domande sbagliate. Poi a dormire: il sonno conta più dell'ultima ora di studio.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>I progressi restano salvati in questo browser.</span>
+  <button class="btn quiet" id="reset-all">Azzera tutti i progressi</button>
+  <span id="reset-confirm" hidden>Sicuro? <button class="btn quiet" id="reset-yes">Sì, azzera</button> <button class="btn quiet" id="reset-no">No</button></span>
+</footer>
+
+<script>
+const DATA = {};
+
+/* ================= QUIZ A RISPOSTA MULTIPLA ================= */
+DATA.quiz = [
+  { t: "base", q: "In C++, se <code>a</code> e <code>b</code> sono <code>int</code>, quanto vale <code>17 / 5</code>?",
+    o: ["3.4", "3", "4", "2"], a: 1,
+    w: "Tra due <code>int</code> la divisione è <b>intera</b>: la parte decimale viene buttata via (troncata, non arrotondata). 17 / 5 = 3,4 → 3." },
+  { t: "base", q: "Quanto vale <code>17 % 5</code>?",
+    o: ["3", "2", "3.4", "5"], a: 1,
+    w: "<code>%</code> è il <b>resto</b> della divisione intera: 17 = 5·3 + <b>2</b>." },
+  { t: "base", q: "Quale condizione è vera quando <code>n</code> è pari?",
+    o: ["n / 2 == 0", "n % 2 == 0", "n % 2 == 1", "n == 2"], a: 1,
+    w: "Un numero è pari se diviso per 2 dà resto 0. <code>n % 2 == 1</code> invece vale per i dispari (positivi)." },
+  { t: "base", q: "Cosa fa l'istruzione <code>x += 3;</code>?",
+    o: ["Assegna 3 a x", "Equivale a x = x + 3", "Controlla se x è maggiore di 3", "È un errore di sintassi"], a: 1,
+    w: "<code>+=</code> è una scorciatoia: aggiunge al valore che c'era già. Allo stesso modo <code>-=</code>, <code>*=</code>, <code>/=</code>." },
+  { t: "base", q: "Qual è la differenza tra <code>=</code> e <code>==</code>?",
+    o: ["Nessuna, sono intercambiabili", "= assegna un valore, == confronta due valori", "= confronta, == assegna", "== si usa solo in Java"], a: 1,
+    w: "<code>x = 5</code> mette 5 dentro x. <code>x == 5</code> chiede «x vale 5?» e dà vero/falso. Nell'<code>if</code> ci va quasi sempre <code>==</code>." },
+  { t: "base", q: "Quanto vale <code>(double) 7 / 2</code> in C++?",
+    o: ["3", "3.5", "4", "Errore"], a: 1,
+    w: "Il <i>cast</i> <code>(double)</code> trasforma 7 in 7.0 <b>prima</b> della divisione, quindi la divisione diventa decimale: 3.5." },
+  { t: "array", q: "Dato <code>double v[8];</code>, quali indici sono validi?",
+    o: ["Da 1 a 8", "Da 0 a 8", "Da 0 a 7", "Da 0 a 9"], a: 2,
+    w: "Gli indici partono sempre da <b>0</b>. Con 8 elementi: 0, 1, …, 7. L'indice 8 <b>non esiste</b>." },
+  { t: "array", q: "Come si scrive l'ultimo elemento di un array di <code>N</code> elementi?",
+    o: ["v[N]", "v[N-1]", "v[N+1]", "v[last]"], a: 1,
+    w: "Se il primo è <code>v[0]</code>, l'ultimo è <code>v[N-1]</code>." },
+  { t: "array", q: "Perché la dimensione dell'array si mette in una costante <code>const int N = 8;</code>?",
+    o: ["Rende il programma più veloce", "Se la dimensione cambia, la modifico in un punto solo (e la prof lo richiede)", "Senza costante non compila", "Serve solo con i double"], a: 1,
+    w: "Usando <code>N</code> ovunque (dichiarazione, cicli, media) basta cambiare un numero. Nei testi della prof c'è scritto «le dimensioni sono gestite con una costante»: se scrivi 8 sparso nel codice perdi punti." },
+  { t: "array", q: "In C++, cosa succede se leggi <code>v[10]</code> da un array di 8 elementi?",
+    o: ["Errore di compilazione", "Restituisce sempre 0", "Comportamento indefinito: valore spazzatura o crash", "Il programma si ferma con un messaggio chiaro"], a: 2,
+    w: "Il C++ <b>non controlla</b> gli indici: legge la memoria che c'è dopo l'array. Java invece si ferma con <code>ArrayIndexOutOfBoundsException</code>." },
+  { t: "array", q: "Per trovare il minimo di un array, con cosa inizializzi <code>min</code>?",
+    o: ["min = 0", "min = v[0]", "min = 1000", "min = -1"], a: 1,
+    w: "Partendo dal <b>primo elemento</b> funziona con qualsiasi dato. Con <code>min = 0</code>, se i valori sono tutti positivi (es. 230 V) il minimo resta 0, un valore che nemmeno esiste nell'array." },
+  { t: "array", q: "Quale condizione è vera quando <code>v[i]</code> è <b>fuori</b> dall'intervallo [min, max]?",
+    o: ["v[i] < min && v[i] > max", "v[i] < min || v[i] > max", "v[i] >= min && v[i] <= max", "v[i] != min && v[i] != max"], a: 1,
+    w: "Fuori = troppo basso <b>oppure</b> troppo alto → <code>||</code>. Con <code>&&</code> servirebbe un numero contemporaneamente &lt; 220 e &gt; 240: impossibile, conteresti sempre 0. <b>Dentro</b> invece si scrive con <code>&&</code>." },
+  { t: "array", q: "Qual è la differenza tra un <b>contatore</b> e un <b>accumulatore</b>?",
+    o: ["Nessuna", "Il contatore fa cont++ (conta quante volte), l'accumulatore fa somma += v[i] (somma i valori)", "Il contatore è double, l'accumulatore int", "L'accumulatore si usa solo nei while"], a: 1,
+    w: "Entrambi partono da 0 <b>prima</b> del ciclo. Il contatore aumenta di 1 quando una condizione è vera; l'accumulatore aggiunge il valore." },
+  { t: "funzioni", q: "Una funzione che calcola la media di un array dovrebbe essere dichiarata come:",
+    o: ["void media(double v[])", "double media(double v[]) con return", "int media(double v[]) senza return", "string media(double v[])"], a: 1,
+    w: "Calcola un valore decimale e lo deve <b>restituire</b>: tipo <code>double</code> e <code>return somma / N;</code>." },
+  { t: "funzioni", q: "Cosa significa la <code>&</code> in <code>void raddoppia(int &x)</code>?",
+    o: ["x è un indirizzo da stampare", "x è passato per riferimento: la funzione modifica la variabile originale", "x è una costante", "x è un array"], a: 1,
+    w: "Senza <code>&</code> la funzione lavora su una <b>copia</b> (per valore). Con <code>&</code> lavora sulla variabile vera del main." },
+  { t: "funzioni", q: "Perché <code>void inserisci(double v[])</code> riempie davvero l'array del main anche senza <code>&</code>?",
+    o: ["Perché è void", "Perché un array viene passato come indirizzo: la funzione lavora sull'array originale", "Perché c'è il cin", "Non è vero, serve la &"], a: 1,
+    w: "Gli array in C++ non vengono copiati: si passa l'indirizzo del primo elemento. Per questo non serve né la <code>&</code> né la dimensione tra le <code>[]</code>." },
+  { t: "funzioni", q: "Una funzione <code>void</code> può contenere <code>return 5;</code>?",
+    o: ["Sì, sempre", "No: void significa che non restituisce nulla (al massimo return; vuoto)", "Solo nel main", "Solo se è l'ultima riga"], a: 1,
+    w: "<code>void</code> = «non restituisce niente». Le voci del menu che <b>stampano</b> di solito sono void; le funzioni che <b>calcolano</b> restituiscono un valore." },
+  { t: "funzioni", q: "Se non usi i prototipi, dove scrivi le funzioni in C++?",
+    o: ["Dopo il main", "Sopra il main", "Dentro il main", "In un file a parte obbligatoriamente"], a: 1,
+    w: "Il compilatore legge dall'alto: una funzione va dichiarata <b>prima</b> di essere usata. Altrimenti: «'media' was not declared in this scope»." },
+  { t: "menu", q: "Perché per il menu si usa <code>do { ... } while (scelta != 0);</code> e non un <code>while</code>?",
+    o: ["È più veloce", "Il do-while esegue il corpo almeno una volta, poi controlla: il menu va mostrato subito", "Il while non funziona con lo switch", "È obbligatorio in C++"], a: 1,
+    w: "Al primo giro <code>scelta</code> non ha ancora un valore: col do-while prima mostri il menu e leggi la scelta, poi controlli." },
+  { t: "menu", q: "Cosa succede se nello <code>switch</code> dimentichi il <code>break</code> dopo <code>case 1</code>?",
+    o: ["Errore di compilazione", "Esegue anche le istruzioni del case 2 (e così via fino al primo break)", "Esce dal programma", "Niente"], a: 1,
+    w: "Si chiama <i>fall-through</i>: lo switch «cade» nei case successivi finché non trova un <code>break</code>." },
+  { t: "menu", q: "A cosa serve <code>default</code> nello switch?",
+    o: ["A uscire dal programma", "A gestire tutte le scelte che non corrispondono a nessun case", "È il primo case eseguito", "Ad azzerare la variabile"], a: 1,
+    w: "Se l'utente scrive 9 e il menu va da 0 a 7, finisce nel <code>default</code>: lì stampi «Scelta non valida»." },
+  { t: "java", q: "In Java, come stampi il testo seguito dal valore di <code>x</code>?",
+    o: ["cout << \"x = \" << x;", "System.out.println(\"x = \" + x);", "print(\"x = \", x);", "System.out.println(\"x = \" << x);"], a: 1,
+    w: "In Java si concatena con <code>+</code>. Il <code>&lt;&lt;</code> è C++ (è proprio l'errore che c'era nel tuo ContaVocali)." },
+  { t: "java", q: "Il file si chiama <code>Rossi_esercizio2.java</code>. Come deve chiamarsi la classe?",
+    o: ["public class Main", "public class Rossi_esercizio2", "public class esercizio2", "Non importa"], a: 1,
+    w: "In Java la classe <code>public</code> deve avere <b>esattamente</b> lo stesso nome del file (maiuscole comprese), altrimenti non compila." },
+  { t: "java", q: "Come ottieni la lunghezza di un array <code>v</code> e di una stringa <code>s</code> in Java?",
+    o: ["v.length e s.length()", "v.length() e s.length", "v.size() e s.size()", "length(v) e length(s)"], a: 0,
+    w: "Array: <code>v.length</code> <b>senza</b> parentesi (è un attributo). Stringa: <code>s.length()</code> <b>con</b> parentesi (è un metodo). Domanda classicissima." },
+  { t: "java", q: "Perché i metodi dell'esercizio Java si scrivono <code>public static</code>?",
+    o: ["Per renderli più veloci", "Perché il main è static e può chiamare direttamente solo metodi static", "Perché restituiscono int", "Non serve, è facoltativo"], a: 1,
+    w: "Senza <code>static</code> ottieni l'errore «non-static method cannot be referenced from a static context»." },
+  { t: "java", q: "Qual è l'equivalente Java di <code>bool</code> e <code>string</code> del C++?",
+    o: ["bool e string", "boolean e String", "Boolean e string", "bit e text"], a: 1,
+    w: "In Java: <code>boolean</code> e <code>String</code> con la S maiuscola (è una classe)." },
+  { t: "stringhe", q: "Cosa succede con <code>\"Ciao\".charAt(4)</code>?",
+    o: ["Restituisce 'o'", "Restituisce ' '", "Errore: StringIndexOutOfBoundsException", "Restituisce null"], a: 2,
+    w: "\"Ciao\" ha 4 caratteri con indici 0–3. L'indice 4 non esiste. L'ultimo carattere è <code>charAt(s.length() - 1)</code>." },
+  { t: "stringhe", q: "Come controlli se la String <code>s</code> contiene \"admin\"?",
+    o: ["s == \"admin\"", "s.equals(\"admin\")", "s = \"admin\"", "s.compare(\"admin\")"], a: 1,
+    w: "<code>==</code> sulle String confronta se sono lo <b>stesso oggetto</b> in memoria, non se hanno gli stessi caratteri. Per il contenuto si usa sempre <code>equals</code>." },
+  { t: "stringhe", q: "Cosa fa la riga <code>frase.toLowerCase();</code> scritta da sola?",
+    o: ["Mette frase in minuscolo", "Niente di utile: crea una nuova stringa minuscola che viene persa", "Errore di compilazione", "Mette in minuscolo solo la prima lettera"], a: 1,
+    w: "Le String in Java non si modificano mai: i metodi ne <b>restituiscono una nuova</b>. Va salvata: <code>frase = frase.toLowerCase();</code>." },
+  { t: "stringhe", q: "Che differenza c'è tra <code>'a'</code> e <code>\"a\"</code>?",
+    o: ["Nessuna", "'a' è un char (un carattere), \"a\" è una String", "'a' è una String, \"a\" un char", "\"a\" si usa solo in C++"], a: 1,
+    w: "<code>charAt(i)</code> restituisce un <b>char</b>, quindi si confronta con apici singoli: <code>c == 'a'</code>." },
+  { t: "stringhe", q: "Quanti elementi ha <code>\"uno due  tre\".split(\" \")</code> (con <b>due</b> spazi tra due e tre)?",
+    o: ["3", "4", "5", "2"], a: 1,
+    w: "Tra i due spazi c'è una stringa <b>vuota</b>: [\"uno\", \"due\", \"\", \"tre\"] → 4. Per questo in contaParole si saltano le parole con <code>length() == 0</code>." },
+  { t: "stringhe", q: "Come controlli che il char <code>c</code> sia una lettera minuscola?",
+    o: ["c >= 'a' && c <= 'z'", "c >= 'a' || c <= 'z'", "c == 'a..z'", "c > \"a\" && c < \"z\""], a: 0,
+    w: "I caratteri sono numeri (codice ASCII) e le lettere sono in ordine, quindi si possono confrontare con <code>&gt;=</code> e <code>&lt;=</code>." },
+  { t: "ricorsione", q: "Cosa deve avere <b>sempre</b> una funzione ricorsiva?",
+    o: ["Un ciclo for", "Un caso base che termina senza richiamarsi", "Due parametri", "Un return void"], a: 1,
+    w: "Caso base (quando fermarsi) + passo ricorsivo (richiamarsi con un problema più piccolo)." },
+  { t: "ricorsione", q: "Cosa succede a una funzione ricorsiva senza caso base?",
+    o: ["Restituisce 0", "Si richiama all'infinito fino a riempire la memoria (stack overflow → crash)", "Non compila", "Si ferma da sola a 0"], a: 1,
+    w: "Ogni chiamata occupa spazio nello <i>stack</i>; senza un punto di arresto lo spazio finisce e il programma va in crash." },
+  { t: "ricorsione", q: "Con <code>f(0) = 0</code> e <code>f(n) = n + f(n-1)</code>, quanto vale <code>f(4)</code>?",
+    o: ["4", "10", "24", "0"], a: 1,
+    w: "4 + 3 + 2 + 1 + 0 = 10. Con <code>*</code> invece di <code>+</code> (e caso base 1) sarebbe il fattoriale: 24." },
+  { t: "errori", q: "In C++ cosa fa <code>if (x = 5)</code>?",
+    o: ["Controlla se x vale 5", "Assegna 5 a x e la condizione è sempre vera", "Errore di compilazione sempre", "Niente"], a: 1,
+    w: "È un'assegnazione: x diventa 5, e 5 (diverso da 0) vale «vero». Errore subdolo perché spesso compila. Si scrive <code>==</code>." },
+  { t: "errori", q: "Cosa succede con <code>if (v[i] > soglia); cont++;</code> (nota il <code>;</code>)?",
+    o: ["Conta correttamente", "Il ; chiude l'if: cont++ viene eseguito sempre", "Errore di compilazione", "Conta solo il primo"], a: 1,
+    w: "Il <code>;</code> subito dopo la condizione è un'istruzione vuota: l'if «controlla niente» e <code>cont++</code> viene eseguito a ogni giro. Stesso problema dopo <code>for(...)</code>." },
+  { t: "errori", q: "La media stampa 6 invece di 6.66667. Qual è la causa più probabile?",
+    o: ["Manca endl", "somma e N sono int: divisione intera", "Il ciclo parte da 1", "Manca using namespace std"], a: 1,
+    w: "<code>int / int</code> tronca. Soluzione: <code>double somma = 0;</code> oppure <code>(double) somma / N</code>." }
+];
+
+/* ================= COSA STAMPA (programmi completi, verificati eseguendoli) ================= */
+DATA.output = [
+  { lang: "cpp", title: "La tua verifica: misterioso(4)", code: String.raw`#include <iostream>
+using namespace std;
+
+int misterioso(int n) {
+    if (n <= 1) return 1;
+    return n * misterioso(n - 1);
+}
+
+int main() {
+    cout << "Risultato: " << misterioso(4) << endl;
+    return 0;
+}`, o: ["Risultato: 4", "Risultato: 10", "Risultato: 24", "Risultato: 1"], a: 2,
+    w: "misterioso(4) = 4·misterioso(3) = 4·3·misterioso(2) = 4·3·2·misterioso(1) = 4·3·2·1 = <b>24</b>. È il fattoriale." },
+
+  { lang: "java", title: "La tua verifica: somma con pari/dispari", code: String.raw`public class Test {
+    public static void main(String[] args) {
+        int somma = 0;
+        for (int i = 1; i <= 5; i++) {
+            if (i % 2 == 0) {
+                somma += i;
+            } else {
+                somma -= i;
+            }
+        }
+        System.out.println("somma finale: " + somma);
+    }
+}`, o: ["somma finale: 15", "somma finale: -3", "somma finale: 3", "somma finale: 6"], a: 1,
+    w: "Traccia: i=1 → -1; i=2 → 1; i=3 → -2; i=4 → 2; i=5 → <b>-3</b>. I pari (2+4=6) si sommano, i dispari (1+3+5=9) si sottraggono: 6−9 = −3. Se la println fosse <b>dentro</b> il for stamperebbe 5 righe: -1, 1, -2, 2, -3." },
+
+  { lang: "cpp", title: "Divisione intera e resto", code: String.raw`#include <iostream>
+using namespace std;
+
+int main() {
+    int a = 7, b = 2;
+    cout << a / b << " " << a % b << " " << (double) a / b << endl;
+    return 0;
+}`, o: ["3.5 1 3.5", "3 1 3.5", "3 1 3", "3 3.5 3.5"], a: 1,
+    w: "7/2 tra int = <b>3</b>; 7%2 = resto <b>1</b>; con il cast <code>(double)</code> la divisione diventa decimale: <b>3.5</b>." },
+
+  { lang: "cpp", title: "Ciclo con condizione", code: String.raw`#include <iostream>
+using namespace std;
+
+int main() {
+    for (int i = 0; i < 6; i++) {
+        if (i % 2 == 1) {
+            cout << i << " ";
+        }
+    }
+    return 0;
+}`, o: ["0 2 4", "1 3 5", "1 3", "0 1 2 3 4 5"], a: 1,
+    w: "i va da 0 a 5 (perché &lt; 6). Stampa solo quando il resto per 2 è 1, cioè i dispari: <b>1 3 5</b>." },
+
+  { lang: "cpp", title: "Ricorsione: potenza di 2", code: String.raw`#include <iostream>
+using namespace std;
+
+int f(int n) {
+    if (n == 0) return 1;
+    return 2 * f(n - 1);
+}
+
+int main() {
+    cout << f(3) << endl;
+    return 0;
+}`, o: ["6", "8", "9", "16"], a: 1,
+    w: "f(3) = 2·f(2) = 2·2·f(1) = 2·2·2·f(0) = 2·2·2·1 = <b>8</b>. Calcola 2 elevato a n." },
+
+  { lang: "cpp", title: "Valore o riferimento?", code: String.raw`#include <iostream>
+using namespace std;
+
+void g(int x, int &y) {
+    x++;
+    y++;
+}
+
+int main() {
+    int a = 1, b = 1;
+    g(a, b);
+    cout << a << " " << b << endl;
+    return 0;
+}`, o: ["1 1", "2 2", "1 2", "2 1"], a: 2,
+    w: "<code>x</code> è una <b>copia</b> di a: a resta 1. <code>y</code> ha la <code>&</code>: è proprio b, che diventa 2. Risultato: <b>1 2</b>." },
+
+  { lang: "cpp", title: "Posizione del minimo", code: String.raw`#include <iostream>
+using namespace std;
+
+int main() {
+    int v[5] = {3, 8, 1, 9, 4};
+    int pos = 0;
+    for (int i = 1; i < 5; i++) {
+        if (v[i] < v[pos]) {
+            pos = i;
+        }
+    }
+    cout << pos << " " << v[pos] << endl;
+    return 0;
+}`, o: ["3 1", "2 1", "1 3", "2 3"], a: 1,
+    w: "Il minimo è 1, che sta all'indice <b>2</b> (si conta da 0!). Stampa prima la posizione e poi il valore: <b>2 1</b>." },
+
+  { lang: "cpp", title: "Media con int", code: String.raw`#include <iostream>
+using namespace std;
+
+int main() {
+    int v[4] = {5, 6, 6, 6};
+    int s = 0;
+    for (int i = 0; i < 4; i++) {
+        s += v[i];
+    }
+    cout << s / 4 << " " << s / 4.0 << endl;
+    return 0;
+}`, o: ["5.75 5.75", "5 5.75", "6 5.75", "5 5"], a: 1,
+    w: "s = 23. <code>23 / 4</code> tra int = <b>5</b>. <code>23 / 4.0</code>: basta che uno dei due sia decimale e la divisione diventa decimale: <b>5.75</b>." },
+
+  { lang: "cpp", title: "Switch senza break", code: String.raw`#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 2;
+    switch (x) {
+        case 1: cout << "A";
+        case 2: cout << "B";
+        case 3: cout << "C"; break;
+        default: cout << "D";
+    }
+    return 0;
+}`, o: ["B", "BC", "BCD", "ABC"], a: 1,
+    w: "Entra nel case 2 e stampa B. Non c'è break, quindi «cade» nel case 3: stampa C, poi trova il break ed esce. <b>BC</b>." },
+
+  { lang: "cpp", title: "While che raddoppia", code: String.raw`#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 1;
+    while (x < 20) {
+        x *= 2;
+    }
+    cout << x << endl;
+    return 0;
+}`, o: ["16", "32", "20", "64"], a: 1,
+    w: "x: 1 → 2 → 4 → 8 → 16 → 32. A 16 la condizione 16 &lt; 20 è ancora vera, quindi raddoppia a <b>32</b>; poi 32 &lt; 20 è falsa ed esce. Il valore finale <b>supera</b> 20." },
+
+  { lang: "cpp", title: "Ricorsione: somma delle cifre", code: String.raw`#include <iostream>
+using namespace std;
+
+int s(int n) {
+    if (n < 10) return n;
+    return n % 10 + s(n / 10);
+}
+
+int main() {
+    cout << s(352) << endl;
+    return 0;
+}`, o: ["352", "10", "253", "3"], a: 1,
+    w: "<code>n % 10</code> prende l'ultima cifra, <code>n / 10</code> la toglie. s(352) = 2 + s(35) = 2 + 5 + s(3) = 2 + 5 + 3 = <b>10</b>." },
+
+  { lang: "cpp", title: "Stampa prima o dopo la chiamata?", code: String.raw`#include <iostream>
+using namespace std;
+
+void f(int n) {
+    if (n == 0) return;
+    f(n - 1);
+    cout << n << " ";
+}
+
+int main() {
+    f(3);
+    return 0;
+}`, o: ["3 2 1", "1 2 3", "3 2 1 0", "0 1 2 3"], a: 1,
+    w: "La cout viene <b>dopo</b> la chiamata ricorsiva: f(3) chiama f(2) che chiama f(1) che chiama f(0) (si ferma). Poi «tornando indietro» stampano f(1), f(2), f(3): <b>1 2 3</b>. Se la cout fosse prima della chiamata: 3 2 1." },
+
+  { lang: "java", title: "Concatenazione: occhio all'ordine", code: String.raw`public class Conc {
+    public static void main(String[] args) {
+        System.out.println("x" + 1 + 2);
+        System.out.println(1 + 2 + "x");
+    }
+}`, o: ["x3\n3x", "x12\n12x", "x12\n3x", "x3\nx3"], a: 2,
+    w: "Si valuta da sinistra a destra. «\"x\" + 1» diventa la stringa \"x1\", poi + 2 → <b>\"x12\"</b>. Nel secondo caso 1 + 2 sono due numeri → 3, poi + \"x\" → <b>\"3x\"</b>." },
+
+  { lang: "java", title: "Metodi delle String", code: String.raw`public class Str {
+    public static void main(String[] args) {
+        String s = "Ciao";
+        System.out.println(s.length() + " " + s.charAt(1) + " " + s.toUpperCase());
+    }
+}`, o: ["4 C CIAO", "3 i CIAO", "4 i CIAO", "4 i Ciao"], a: 2,
+    w: "length() = <b>4</b>; charAt(1) è il <b>secondo</b> carattere: <b>i</b>; toUpperCase → <b>CIAO</b>. Nota: qui length() + \" \" funziona perché c'è subito una stringa." },
+
+  { lang: "java", title: "For che scende di 3", code: String.raw`public class Giu {
+    public static void main(String[] args) {
+        int c = 0;
+        for (int i = 10; i > 0; i -= 3) {
+            c++;
+        }
+        System.out.println(c);
+    }
+}`, o: ["3", "4", "10", "5"], a: 1,
+    w: "i vale 10, 7, 4, 1 (tutti &gt; 0) → 4 giri. Poi i = −2 ed esce. c = <b>4</b>." },
+
+  { lang: "java", title: "Do-while che dimezza", code: String.raw`public class Meta {
+    public static void main(String[] args) {
+        int n = 10;
+        do {
+            n = n / 2;
+            System.out.print(n + " ");
+        } while (n > 1);
+    }
+}`, o: ["5 2 1", "10 5 2 1", "5 2", "5 2.5 1.25"], a: 0,
+    w: "10/2 = 5 (stampa 5, 5&gt;1 continua); 5/2 = <b>2</b> (divisione intera!); 2/2 = 1 (stampa 1, 1&gt;1 falso, esce). <b>5 2 1</b>." },
+
+  { lang: "java", title: "split e indici", code: String.raw`public class Spl {
+    public static void main(String[] args) {
+        String[] p = "oggi ho la verifica".split(" ");
+        System.out.println(p.length + " " + p[2]);
+    }
+}`, o: ["4 ho", "3 la", "4 la", "19 la"], a: 2,
+    w: "Le parole sono 4: p[0]=\"oggi\", p[1]=\"ho\", p[2]=<b>\"la\"</b>, p[3]=\"verifica\". p.length = <b>4</b>." },
+
+  { lang: "java", title: "Array e indice nel calcolo", code: String.raw`public class Arr {
+    public static void main(String[] args) {
+        int[] v = {2, 4, 6};
+        int s = 0;
+        for (int i = 0; i < v.length; i++) {
+            s += v[i] * i;
+        }
+        System.out.println(s);
+    }
+}`, o: ["12", "16", "24", "0"], a: 1,
+    w: "i=0: 2·0 = 0; i=1: 4·1 = 4; i=2: 6·2 = 12. Totale 0+4+12 = <b>16</b>." },
+
+  { lang: "java", title: "Cicli annidati", code: String.raw`public class Stelle {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 3; i++) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+    }
+}`, o: ["***\n***\n***", "*\n**\n***", "***\n**\n*", "******"], a: 1,
+    w: "Il ciclo interno fa tanti giri quanto vale i: 1, poi 2, poi 3 stelle. Dopo ogni riga <code>println()</code> va a capo." },
+
+  { lang: "java", title: "Il trabocchetto finale", code: String.raw`public class Trap {
+    public static void main(String[] args) {
+        String s = "Informatica";
+        int c = 0;
+        for (int i = 0; i < s.length(); i += 2) {
+            if (s.charAt(i) == 'a' || s.charAt(i) == 'o') {
+                c++;
+            }
+        }
+        System.out.println(c + " " + s.length() + 1);
+    }
+}`, o: ["3 12", "2 12", "2 111", "3 111"], a: 2,
+    w: "Con <code>i += 2</code> guarda solo gli indici pari: I, f, r, <b>a</b>, i, <b>a</b> → c = 2 (la o è all'indice 3, saltata). Poi \"2 \" è già una stringa, quindi + 11 → \"2 11\" e + 1 → <b>\"2 111\"</b>." }
+];
+
+/* ================= TROVA L'ERRORE ================= */
+// bad: sottostringhe che identificano le righe sbagliate (basta cliccarne una)
+DATA.debug = [
+  { lang: "cpp", title: "La media sbagliata", goal: "Con i voti 6, 7, 7 dovrebbe stampare 6.66667, ma stampa 6.", code: String.raw`const int N = 3;
+
+double media(int v[]) {
+    int somma = 0;
+    for (int i = 0; i < N; i++) {
+        somma += v[i];
+    }
+    return somma / N;
+}`, bad: ["int somma = 0", "return somma / N"],
+    w: "<code>somma</code> è <code>int</code> e <code>N</code> è <code>int</code>: la divisione è intera (20/3 = 6). Restituire <code>double</code> non basta, perché la divisione è già stata fatta tra interi.",
+    fix: String.raw`double somma = 0;          // oppure: return (double) somma / N;` },
+
+  { lang: "cpp", title: "Lo scambio che non scambia", goal: "Dopo scambia(x, y) con x=10 e y=20 ci si aspetta x=20, y=10. Invece restano 10 e 20.", code: String.raw`void scambia(int a, int b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+int main() {
+    int x = 10, y = 20;
+    scambia(x, y);
+    cout << x << " " << y << endl;
+}`, bad: ["void scambia(int a, int b)"],
+    w: "I parametri sono passati <b>per valore</b>: a e b sono copie. La funzione scambia le copie, che spariscono alla fine.",
+    fix: String.raw`void scambia(int &a, int &b) {` },
+
+  { lang: "java", title: "La somma che esplode", goal: "Dovrebbe stampare la somma degli elementi. Invece il programma va in errore.", code: String.raw`int[] numeri = {4, 8, 15, 16, 23, 42};
+int somma = 0;
+for (int i = 0; i <= numeri.length; i++) {
+    somma += numeri[i];
+}
+System.out.println("Somma: " + somma);`, bad: ["i <= numeri.length"],
+    w: "6 elementi = indici da 0 a 5. Con <code>&lt;=</code> i arriva a 6 → <code>ArrayIndexOutOfBoundsException</code>. È l'errore <i>off by one</i>.",
+    fix: String.raw`for (int i = 0; i < numeri.length; i++) {` },
+
+  { lang: "java", title: "Il login che rifiuta sempre", goal: "Se l'utente scrive admin dovrebbe stampare «Accesso consentito». Stampa sempre «Accesso negato».", code: String.raw`Scanner in = new Scanner(System.in);
+String utente = in.nextLine();
+if (utente == "admin") {
+    System.out.println("Accesso consentito");
+} else {
+    System.out.println("Accesso negato");
+}`, bad: ["utente == \"admin\""],
+    w: "<code>==</code> tra String confronta i riferimenti (se sono lo stesso oggetto), non il contenuto. La stringa letta da tastiera è un oggetto diverso.",
+    fix: String.raw`if (utente.equals("admin")) {` },
+
+  { lang: "cpp", title: "Il minimo che vale sempre 0", goal: "Con temperature tutte positive (30, 32, 35…) dovrebbe restituire la più bassa. Restituisce sempre 0.", code: String.raw`double minimo(double t[]) {
+    double min = 0;
+    for (int i = 0; i < N; i++) {
+        if (t[i] < min) {
+            min = t[i];
+        }
+    }
+    return min;
+}`, bad: ["double min = 0"],
+    w: "Nessuna temperatura è minore di 0, quindi <code>min</code> non viene mai aggiornato. Va inizializzato con il primo elemento.",
+    fix: String.raw`double min = t[0];` },
+
+  { lang: "cpp", title: "Il menu che fa due cose", goal: "Scegliendo 1 dovrebbe solo inserire i dati. Invece dopo l'inserimento mostra anche le medie.", code: String.raw`switch (scelta) {
+    case 1: inserisci(prima, "PRIMA");
+    case 2: visualizzaMedie(prima, dopo); break;
+    case 0: cout << "Fine" << endl; break;
+    default: cout << "Scelta non valida" << endl;
+}`, bad: ["case 1: inserisci"],
+    w: "Manca il <code>break</code> nel case 1: lo switch «cade» nel case 2.",
+    fix: String.raw`case 1: inserisci(prima, "PRIMA"); break;` },
+
+  { lang: "cpp", title: "Il menu che non esce mai (o esce subito)", goal: "Il programma dovrebbe uscire solo scegliendo 0. Invece si comporta in modo strano.", code: String.raw`int scelta;
+do {
+    cout << "Scelta: ";
+    cin >> scelta;
+    if (scelta = 0) {
+        cout << "Arrivederci" << endl;
+    }
+} while (scelta != 0);`, bad: ["scelta = 0)"],
+    w: "<code>scelta = 0</code> è un'<b>assegnazione</b>: mette 0 in scelta (e la condizione vale falso). Poi il while trova scelta = 0 ed esce sempre, qualunque cosa abbia scritto l'utente.",
+    fix: String.raw`if (scelta == 0) {` },
+
+  { lang: "cpp", title: "Il contatore che conta tutto", goal: "Dovrebbe contare i giorni sopra soglia. Restituisce sempre 7, cioè tutti.", code: String.raw`int contaSopra(double t[], double soglia) {
+    int cont = 0;
+    for (int i = 0; i < GIORNI; i++) {
+        if (t[i] > soglia);
+            cont++;
+    }
+    return cont;
+}`, bad: ["if (t[i] > soglia);"],
+    w: "Il <code>;</code> dopo la condizione chiude l'if con un'istruzione vuota. <code>cont++</code> non dipende più dall'if e viene eseguito a ogni giro (l'indentazione inganna!).",
+    fix: String.raw`if (t[i] > soglia) {
+    cont++;
+}` },
+
+  { lang: "cpp", title: "Fuori intervallo = sempre 0", goal: "Con min 220 e max 240 dovrebbe contare i punti fuori intervallo. Restituisce sempre 0.", code: String.raw`int contaFuori(double v[], double min, double max) {
+    int cont = 0;
+    for (int i = 0; i < N; i++) {
+        if (v[i] < min && v[i] > max) {
+            cont++;
+        }
+    }
+    return cont;
+}`, bad: ["v[i] < min && v[i] > max"],
+    w: "Nessun numero può essere contemporaneamente &lt; 220 <b>e</b> &gt; 240. Fuori intervallo = troppo basso <b>oppure</b> troppo alto.",
+    fix: String.raw`if (v[i] < min || v[i] > max) {` },
+
+  { lang: "java", title: "Il metodo che non si può chiamare", goal: "Il programma non compila: «non-static method contaVocali(String) cannot be referenced from a static context».", code: String.raw`public class Frase {
+    public int contaVocali(String frase) {
+        int c = 0;
+        // ... conteggio ...
+        return c;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(contaVocali("ciao"));
+    }
+}`, bad: ["public int contaVocali"],
+    w: "Il main è <code>static</code> e può chiamare direttamente solo metodi <code>static</code>.",
+    fix: String.raw`public static int contaVocali(String frase) {` },
+
+  { lang: "java", title: "Il ContaVocali (il tuo esercizio!)", goal: "Non compila.", code: String.raw`int conteggio = 0;
+for (int i = 0; i < frase.length(); i++) {
+    char c = Character.toLowerCase(frase.charAt(i));
+    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+        conteggio++;
+    }
+}
+System.out.println("Numero di vocali: " << conteggio);`, bad: ["<< conteggio"],
+    w: "<code>&lt;&lt;</code> è la sintassi del <code>cout</code> C++. In Java si concatena con <code>+</code>.",
+    fix: String.raw`System.out.println("Numero di vocali: " + conteggio);` },
+
+  { lang: "java", title: "Le A maiuscole non contano", goal: "contaA(\"Ana\") dovrebbe restituire 2. Restituisce 1.", code: String.raw`public static int contaA(String frase) {
+    frase.toLowerCase();
+    int c = 0;
+    for (int i = 0; i < frase.length(); i++) {
+        if (frase.charAt(i) == 'a') {
+            c++;
+        }
+    }
+    return c;
+}`, bad: ["frase.toLowerCase();"],
+    w: "Le String non si modificano: <code>toLowerCase()</code> restituisce una <b>nuova</b> stringa, che qui viene buttata via. frase resta \"Ana\".",
+    fix: String.raw`frase = frase.toLowerCase();` },
+
+  { lang: "cpp", title: "La ricorsione infinita", goal: "Il programma va in crash (stack overflow).", code: String.raw`int fattoriale(int n) {
+    return n * fattoriale(n - 1);
+}
+
+int main() {
+    cout << fattoriale(4) << endl;
+}`, bad: ["return n * fattoriale(n - 1)"],
+    w: "Manca il <b>caso base</b>: la funzione si richiama all'infinito (4, 3, 2, 1, 0, −1, …).",
+    fix: String.raw`if (n <= 1) return 1;
+return n * fattoriale(n - 1);` },
+
+  { lang: "cpp", title: "La funzione che non restituisce", goal: "Il compilatore dà un warning e la media stampata è un numero a caso.", code: String.raw`double media(double v[]) {
+    double s = 0;
+    for (int i = 0; i < N; i++) {
+        s += v[i];
+    }
+    s / N;
+}`, bad: ["s / N;"],
+    w: "Il calcolo viene fatto ma il risultato non viene restituito: manca <code>return</code>. Una funzione non-void deve sempre restituire un valore.",
+    fix: String.raw`return s / N;` }
+];
+
+/* ================= COMPLETA IL CODICE ================= */
+// [[n]] = casella; ans[n] = risposte accettate (gli spazi vengono ignorati)
+DATA.fill = [
+  { lang: "cpp", title: "Media di un array", code: String.raw`double media(double v[]) {
+    double somma = [[0]];
+    for (int i = 0; i [[1]] N; i++) {
+        somma [[2]] v[i];
+    }
+    [[3]] somma / N;
+}`, ans: [["0", "0.0"], ["<"], ["+="], ["return"]],
+    w: "L'accumulatore parte da 0, il ciclo va da 0 a N−1 (<code>&lt;</code>), si somma con <code>+=</code> e si restituisce con <code>return</code>." },
+
+  { lang: "cpp", title: "Posizione del minimo", code: String.raw`int posMinimo(double v[]) {
+    int pos = [[0]];
+    for (int i = 1; i < N; i++) {
+        if (v[i] [[1]] v[pos]) {
+            pos = [[2]];
+        }
+    }
+    return [[3]];
+}`, ans: [["0"], ["<"], ["i"], ["pos"]],
+    w: "Ipotizzo che il minimo sia il primo (pos = 0). Se trovo un elemento più piccolo di <code>v[pos]</code> mi salvo la sua posizione <code>i</code>. Per il massimo basta cambiare <code>&lt;</code> in <code>&gt;</code>." },
+
+  { lang: "cpp", title: "Lo scheletro del menu", code: String.raw`int scelta;
+[[0]] {
+    cout << "1. Inserisci" << endl;
+    cout << "0. Esci" << endl;
+    cin [[1]] scelta;
+    [[2]] (scelta) {
+        case 1: inserisci(v); [[3]];
+        case 0: cout << "Ciao" << endl; break;
+        [[4]]: cout << "Scelta non valida" << endl;
+    }
+} [[5]] (scelta != 0);`, ans: [["do"], [">>"], ["switch"], ["break"], ["default"], ["while"]],
+    w: "do-while (eseguito almeno una volta), cin con <code>&gt;&gt;</code>, switch con break dopo ogni case, default per le scelte non valide." },
+
+  { lang: "cpp", title: "Conta fuori intervallo", code: String.raw`int contaFuori(double v[], double min, double max) {
+    int cont = [[0]];
+    for (int i = 0; i < N; i++) {
+        if (v[i] < min [[1]] v[i] > max) {
+            [[2]];
+        }
+    }
+    return cont;
+}`, ans: [["0"], ["||"], ["cont++", "++cont", "cont+=1", "cont=cont+1"]],
+    w: "Fuori = troppo basso <b>oppure</b> troppo alto, quindi <code>||</code>." },
+
+  { lang: "cpp", title: "Scambio per riferimento", code: String.raw`void scambia(int [[0]]a, int [[1]]b) {
+    int temp = a;
+    a = [[2]];
+    b = [[3]];
+}`, ans: [["&"], ["&"], ["b"], ["temp"]],
+    w: "Con <code>&</code> la funzione modifica le variabili del main. temp conserva a, che altrimenti verrebbe sovrascritto." },
+
+  { lang: "cpp", title: "Fattoriale ricorsivo", code: String.raw`int fattoriale(int n) {
+    if (n <= 1) {
+        return [[0]];
+    }
+    return n * fattoriale([[1]]);
+}`, ans: [["1"], ["n-1"]],
+    w: "Caso base: 1! = 1 (e 0! = 1). Passo ricorsivo: n! = n · (n−1)!" },
+
+  { lang: "java", title: "Contare le vocali", code: String.raw`public static int contaVocali(String frase) {
+    String f = frase.[[0]]();
+    int cont = 0;
+    for (int i = 0; i < f.[[1]](); i++) {
+        char c = f.[[2]](i);
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            cont++;
+        }
+    }
+    return cont;
+}`, ans: [["toLowerCase"], ["length"], ["charAt"]],
+    w: "Metto in minuscolo (così conto anche A, E…), scorro fino a <code>length()</code>, prendo ogni carattere con <code>charAt(i)</code>." },
+
+  { lang: "java", title: "Palindroma", code: String.raw`public static boolean ePalindroma(String frase) {
+    String f = frase.toLowerCase().[[0]](" ", "");
+    int sx = 0;
+    int dx = f.length() [[1]];
+    while (sx [[2]] dx) {
+        if (f.charAt(sx) [[3]] f.charAt(dx)) {
+            return [[4]];
+        }
+        sx++;
+        dx--;
+    }
+    return true;
+}`, ans: [["replace"], ["-1"], ["<"], ["!="], ["false"]],
+    w: "Tolgo gli spazi, poi confronto il primo con l'ultimo, il secondo con il penultimo… Alla prima differenza: false. Se arrivo in fondo: true." },
+
+  { lang: "java", title: "Contare le parole", code: String.raw`public static int contaParole(String frase) {
+    String[] parole = frase.[[0]]().[[1]](" ");
+    return parole.[[2]];
+}`, ans: [["trim"], ["split"], ["length"]],
+    w: "<code>trim()</code> toglie gli spazi all'inizio e alla fine, <code>split(\" \")</code> divide in parole, e la lunghezza di un <b>array</b> è <code>length</code> senza parentesi." },
+
+  { lang: "java", title: "Invertire una frase", code: String.raw`public static String inverti(String frase) {
+    String r = [[0]];
+    for (int i = frase.length() [[1]]; i [[2]] 0; i--) {
+        r = r + frase.[[3]](i);
+    }
+    return r;
+}`, ans: [['""'], ["-1"], [">="], ["charAt"]],
+    w: "Parto da una stringa vuota e aggiungo i caratteri dall'ultimo (indice length()−1) al primo (indice 0, quindi <code>&gt;= 0</code>)." }
+];
+
+/* ================= ESERCIZI DA SCRIVERE ================= */
+DATA.esercizi = [
+  { lang: "cpp", min: 5, title: "Conta i pari", text: "Con <code>const int N = 10;</code> scrivi la funzione <code>int contaPari(int v[])</code> che restituisce quanti elementi dell'array sono pari.",
+    hints: ["È un contatore: <code>int cont = 0;</code> prima del ciclo, <code>cont++</code> dentro.", "Pari significa <code>v[i] % 2 == 0</code>."],
+    sol: String.raw`const int N = 10;
+
+int contaPari(int v[]) {
+    int cont = 0;
+    for (int i = 0; i < N; i++) {
+        if (v[i] % 2 == 0) {
+            cont++;
+        }
+    }
+    return cont;
+}` },
+
+  { lang: "cpp", min: 5, title: "Massimo e posizione", text: "Scrivi <code>int posMassimo(double v[])</code> che restituisce la <b>posizione</b> del valore massimo. Poi scrivi le due righe del main che stampano «Massimo: … al punto …» (numerando i punti da 1).",
+    hints: ["Parti con <code>int pos = 0;</code> e il ciclo da <code>i = 1</code>.", "Confronta <code>v[i] &gt; v[pos]</code>. Nel main il valore è <code>v[p]</code> e il punto è <code>p + 1</code>."],
+    sol: String.raw`int posMassimo(double v[]) {
+    int pos = 0;
+    for (int i = 1; i < N; i++) {
+        if (v[i] > v[pos]) {
+            pos = i;
+        }
+    }
+    return pos;
+}
+
+// nel main:
+int p = posMassimo(v);
+cout << "Massimo: " << v[p] << " al punto " << p + 1 << endl;` },
+
+  { lang: "cpp", min: 10, title: "Sopra la media", text: "Scrivi <code>void stampaSopraMedia(double v[])</code> che stampa tutti gli elementi <b>maggiori della media</b> con la loro posizione. Riusa una funzione <code>media</code>.",
+    hints: ["Calcola la media <b>una volta</b> prima del ciclo: <code>double m = media(v);</code>", "Poi un ciclo con <code>if (v[i] &gt; m)</code> e la cout."],
+    sol: String.raw`double media(double v[]) {
+    double somma = 0;
+    for (int i = 0; i < N; i++) {
+        somma += v[i];
+    }
+    return somma / N;
+}
+
+void stampaSopraMedia(double v[]) {
+    double m = media(v);
+    cout << "Media: " << m << endl;
+    for (int i = 0; i < N; i++) {
+        if (v[i] > m) {
+            cout << "Punto " << i + 1 << ": " << v[i] << endl;
+        }
+    }
+}` },
+
+  { lang: "cpp", min: 10, title: "Percentuale sopra soglia", text: "Scrivi <code>double percentualeSopra(int v[], int soglia)</code> che restituisce la <b>percentuale</b> di elementi maggiori della soglia (es. 3 su 8 → 37.5). Attenzione alla divisione!",
+    hints: ["Prima conta (contatore), poi calcola la percentuale.", "<code>cont * 100 / N</code> tra int dà 37 e non 37.5: scrivi <code>cont * 100.0 / N</code>."],
+    sol: String.raw`double percentualeSopra(int v[], int soglia) {
+    int cont = 0;
+    for (int i = 0; i < N; i++) {
+        if (v[i] > soglia) {
+            cont++;
+        }
+    }
+    return cont * 100.0 / N;   // 100.0 forza la divisione decimale
+}` },
+
+  { lang: "cpp", min: 10, title: "Ricerca di un valore", text: "Scrivi <code>int cerca(int v[], int x)</code> che restituisce la posizione della <b>prima</b> occorrenza di x nell'array, oppure <b>-1</b> se non c'è.",
+    hints: ["Appena trovi <code>v[i] == x</code> fai subito <code>return i;</code>", "Il <code>return -1;</code> va <b>dopo</b> il ciclo (se lo metti in un else dentro il ciclo controlli solo il primo elemento!)."],
+    sol: String.raw`int cerca(int v[], int x) {
+    for (int i = 0; i < N; i++) {
+        if (v[i] == x) {
+            return i;      // trovato: esco subito
+        }
+    }
+    return -1;             // ho controllato tutto e non c'era
+}` },
+
+  { lang: "cpp", min: 10, title: "Ricorsione: potenza", text: "Scrivi la funzione <b>ricorsiva</b> <code>int potenza(int b, int e)</code> che calcola b elevato a e (con e ≥ 0), <b>senza cicli</b>.",
+    hints: ["Caso base: qualsiasi numero elevato a 0 fa 1.", "Passo: b<sup>e</sup> = b · b<sup>e−1</sup>"],
+    sol: String.raw`int potenza(int b, int e) {
+    if (e == 0) {
+        return 1;                    // caso base
+    }
+    return b * potenza(b, e - 1);    // passo ricorsivo
+}
+// potenza(2, 3) = 2 * 2 * 2 * 1 = 8` },
+
+  { lang: "cpp", min: 10, title: "Ricorsione: conta cifre", text: "Scrivi la funzione ricorsiva <code>int contaCifre(int n)</code> che restituisce quante cifre ha n (n ≥ 0). Es. contaCifre(4071) = 4.",
+    hints: ["Se n &lt; 10 ha una sola cifra.", "<code>n / 10</code> toglie l'ultima cifra: contaCifre(4071) = 1 + contaCifre(407)."],
+    sol: String.raw`int contaCifre(int n) {
+    if (n < 10) {
+        return 1;
+    }
+    return 1 + contaCifre(n / 10);
+}` },
+
+  { lang: "java", min: 10, title: "Conta maiuscole", text: "Scrivi il metodo statico <code>contaMaiuscole(String frase)</code> che restituisce il numero di lettere maiuscole.",
+    hints: ["Questa volta <b>non</b> mettere la frase in minuscolo!", "Maiuscola: <code>c &gt;= 'A' && c &lt;= 'Z'</code>"],
+    sol: String.raw`public static int contaMaiuscole(String frase) {
+    int cont = 0;
+    for (int i = 0; i < frase.length(); i++) {
+        char c = frase.charAt(i);
+        if (c >= 'A' && c <= 'Z') {
+            cont++;
+        }
+    }
+    return cont;
+}` },
+
+  { lang: "java", min: 10, title: "Censura le vocali", text: "Scrivi <code>sostituisciVocali(String frase)</code> che restituisce una nuova frase in cui ogni vocale è sostituita da <code>*</code>. Es. \"Ciao Mondo\" → \"C*** M*nd*\".",
+    hints: ["Costruisci una nuova stringa: <code>String r = \"\";</code> e aggiungi un carattere alla volta.", "Per controllare la vocale usa la versione minuscola del carattere, ma aggiungi a r il carattere originale se non è vocale."],
+    sol: String.raw`public static String sostituisciVocali(String frase) {
+    String r = "";
+    for (int i = 0; i < frase.length(); i++) {
+        char c = frase.charAt(i);
+        char m = Character.toLowerCase(c);
+        if (m == 'a' || m == 'e' || m == 'i' || m == 'o' || m == 'u') {
+            r = r + "*";
+        } else {
+            r = r + c;
+        }
+    }
+    return r;
+}` },
+
+  { lang: "java", min: 10, title: "Parole che iniziano con…", text: "Scrivi <code>contaIniziali(String frase, char lettera)</code> che conta quante parole iniziano con quella lettera (senza distinguere maiuscole e minuscole). Es. (\"Mario mangia la mela\", 'm') → 3.",
+    hints: ["<code>split(\" \")</code> per avere le parole, poi guarda <code>parole[i].charAt(0)</code>.", "Metti tutto in minuscolo: la frase con <code>toLowerCase()</code> e la lettera con <code>Character.toLowerCase(lettera)</code>. Salta le parole vuote."],
+    sol: String.raw`public static int contaIniziali(String frase, char lettera) {
+    String[] parole = frase.toLowerCase().trim().split(" ");
+    char l = Character.toLowerCase(lettera);
+    int cont = 0;
+    for (int i = 0; i < parole.length; i++) {
+        if (parole[i].length() > 0 && parole[i].charAt(0) == l) {
+            cont++;
+        }
+    }
+    return cont;
+}` },
+
+  { lang: "java", min: 10, title: "Lettere doppie", text: "Scrivi <code>contaDoppie(String parola)</code> che conta le coppie di lettere uguali consecutive. Es. \"cappello\" → 2 (pp, ll), \"mamma\" → 1.",
+    hints: ["Confronta ogni carattere con il <b>successivo</b>: <code>charAt(i) == charAt(i + 1)</code>.", "Allora il ciclo deve fermarsi a <code>i &lt; parola.length() - 1</code>, altrimenti i+1 esce dalla stringa."],
+    sol: String.raw`public static int contaDoppie(String parola) {
+    int cont = 0;
+    for (int i = 0; i < parola.length() - 1; i++) {
+        if (parola.charAt(i) == parola.charAt(i + 1)) {
+            cont++;
+        }
+    }
+    return cont;
+}` },
+
+  { lang: "cpp", min: 30, title: "PROVA COMPLETA: voti dei quadrimestri", text: "Una classe ha <b>5 studenti</b>. Realizza un programma C++ con menu e funzioni distinte che permetta di: <b>1)</b> inserire i voti del 1° quadrimestre; <b>2)</b> inserire i voti del 2° quadrimestre; <b>3)</b> visualizzare la media di ciascun quadrimestre; <b>4)</b> per ogni studente dire se è MIGLIORATO, PEGGIORATO o STABILE; <b>5)</b> contare le insufficienze (voto &lt; 6) in ciascun quadrimestre; <b>6)</b> trovare il voto più alto del 2° quadrimestre e il numero dello studente; <b>0)</b> uscire. Dimensione gestita con costante, menu ripetuto fino a 0.",
+    hints: ["Parti dallo scheletro: const, due array, do-while + switch con 7 case (0–6) + default. Compilalo <b>vuoto</b> prima di scrivere le funzioni.", "Le voci 3, 5, 6 sono gli schemi media, conteggio e posizione del massimo. La 4 è il confronto elemento per elemento con if / else if / else."],
+    sol: String.raw`#include <iostream>
+using namespace std;
+
+const int N = 5;   // numero di studenti
+
+double media(double v[]) {
+    double somma = 0;
+    for (int i = 0; i < N; i++) somma += v[i];
+    return somma / N;
+}
+
+int contaInsufficienze(double v[]) {
+    int cont = 0;
+    for (int i = 0; i < N; i++)
+        if (v[i] < 6) cont++;
+    return cont;
+}
+
+int posMassimo(double v[]) {
+    int pos = 0;
+    for (int i = 1; i < N; i++)
+        if (v[i] > v[pos]) pos = i;
+    return pos;
+}
+
+void inserisci(double v[], string quad) {
+    cout << "Voti " << quad << " quadrimestre" << endl;
+    for (int i = 0; i < N; i++) {
+        cout << "Studente " << i + 1 << ": ";
+        cin >> v[i];
+    }
+}
+
+void visualizzaMedie(double q1[], double q2[]) {
+    cout << "Media 1Q: " << media(q1) << endl;
+    cout << "Media 2Q: " << media(q2) << endl;
+}
+
+void andamento(double q1[], double q2[]) {
+    for (int i = 0; i < N; i++) {
+        cout << "Studente " << i + 1 << ": ";
+        if (q2[i] > q1[i]) cout << "MIGLIORATO" << endl;
+        else if (q2[i] < q1[i]) cout << "PEGGIORATO" << endl;
+        else cout << "STABILE" << endl;
+    }
+}
+
+void insufficienze(double q1[], double q2[]) {
+    cout << "Insufficienze 1Q: " << contaInsufficienze(q1) << endl;
+    cout << "Insufficienze 2Q: " << contaInsufficienze(q2) << endl;
+}
+
+void votoMassimo(double q2[]) {
+    int p = posMassimo(q2);
+    cout << "Voto piu' alto 2Q: " << q2[p] << " (studente " << p + 1 << ")" << endl;
+}
+
+int main() {
+    double q1[N] = {0};
+    double q2[N] = {0};
+    int scelta;
+    do {
+        cout << "\n1. Voti 1Q\n2. Voti 2Q\n3. Medie\n4. Andamento\n"
+             << "5. Insufficienze\n6. Voto massimo 2Q\n0. Esci\nScelta: ";
+        cin >> scelta;
+        switch (scelta) {
+            case 1: inserisci(q1, "1"); break;
+            case 2: inserisci(q2, "2"); break;
+            case 3: visualizzaMedie(q1, q2); break;
+            case 4: andamento(q1, q2); break;
+            case 5: insufficienze(q1, q2); break;
+            case 6: votoMassimo(q2); break;
+            case 0: cout << "Fine" << endl; break;
+            default: cout << "Scelta non valida" << endl;
+        }
+    } while (scelta != 0);
+    return 0;
+}` },
+
+  { lang: "java", min: 25, title: "PROVA COMPLETA: analisi di un testo", text: "Scrivi un programma Java (classe <code>Testo</code>) con i metodi statici: <code>contaSpazi(frase)</code>; <code>primaEUltima(frase)</code> che restituisce una String con il primo e l'ultimo carattere (es. \"Ciao\" → \"Co\"); <code>contaParoleLunghe(frase, n)</code> che conta le parole con più di n caratteri; <code>maiuscoleIniziali(frase)</code> che restituisce <b>true</b> se ogni parola inizia con una maiuscola. Il main li richiama su almeno due frasi.",
+    hints: ["primaEUltima: <code>\"\" + frase.charAt(0) + frase.charAt(frase.length() - 1)</code> (il \"\" iniziale serve: due char sommati darebbero un numero!).", "maiuscoleIniziali: appena trovi una parola che <b>non</b> inizia con A–Z restituisci false; dopo il ciclo restituisci true."],
+    sol: String.raw`public class Testo {
+
+    public static int contaSpazi(String frase) {
+        int cont = 0;
+        for (int i = 0; i < frase.length(); i++) {
+            if (frase.charAt(i) == ' ') {
+                cont++;
+            }
+        }
+        return cont;
+    }
+
+    public static String primaEUltima(String frase) {
+        // "" davanti: altrimenti char + char viene sommato come numero
+        return "" + frase.charAt(0) + frase.charAt(frase.length() - 1);
+    }
+
+    public static int contaParoleLunghe(String frase, int n) {
+        String[] parole = frase.trim().split(" ");
+        int cont = 0;
+        for (int i = 0; i < parole.length; i++) {
+            if (parole[i].length() > n) {
+                cont++;
+            }
+        }
+        return cont;
+    }
+
+    public static boolean maiuscoleIniziali(String frase) {
+        String[] parole = frase.trim().split(" ");
+        for (int i = 0; i < parole.length; i++) {
+            if (parole[i].length() > 0) {
+                char c = parole[i].charAt(0);
+                if (!(c >= 'A' && c <= 'Z')) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void analizza(String frase) {
+        System.out.println("Frase: \"" + frase + "\"");
+        System.out.println("  Spazi: " + contaSpazi(frase));
+        System.out.println("  Prima e ultima: " + primaEUltima(frase));
+        System.out.println("  Parole con piu' di 4 lettere: " + contaParoleLunghe(frase, 4));
+        System.out.println("  Tutte maiuscole iniziali: " + maiuscoleIniziali(frase));
+    }
+
+    public static void main(String[] args) {
+        analizza("Domani ho la verifica di informatica");
+        analizza("Oggi Studio Java");
+    }
+}` }
+];
+
+if (typeof module !== "undefined") module.exports = DATA;
+
+</script>
+<script>
+(function () {
+  "use strict";
+  const KEY = "ripasso-info-4-v1";
+  let S = {};
+  try { S = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { S = {}; }
+  ["quiz", "output", "debug", "fill", "es", "mine", "ck"].forEach(k => { if (!S[k] || typeof S[k] !== "object") S[k] = {}; });
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} updateScore(); }
+
+  /* ---------- evidenziazione del codice ---------- */
+  const KW = {
+    cpp: "int double float char bool void return if else for while do switch case break default const using namespace true false string cout cin endl",
+    java: "public class static void int double char boolean String return if else for while do switch case break default new true false import final Scanner System Character"
+  };
+  const KWS = { cpp: new Set(KW.cpp.split(" ")), java: new Set(KW.java.split(" ")) };
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function hlLine(line, lang) {
+    const kw = KWS[lang];
+    const re = /(\/\/.*$)|("(?:[^"\\]|\\.)*")|('(?:[^'\\]|\\.)*')|(#\w+)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g;
+    let out = "", last = 0, m;
+    while ((m = re.exec(line))) {
+      out += esc(line.slice(last, m.index));
+      const t = m[0];
+      if (m[1]) out += '<span class="c">' + esc(t) + "</span>";
+      else if (m[2] || m[3]) out += '<span class="s">' + esc(t) + "</span>";
+      else if (m[4]) out += '<span class="k">' + esc(t) + "</span>";
+      else if (m[5]) out += '<span class="n">' + t + "</span>";
+      else if (kw.has(t)) out += '<span class="k">' + t + "</span>";
+      else if (line[re.lastIndex] === "(") out += '<span class="f">' + t + "</span>";
+      else out += t;
+      last = re.lastIndex;
+    }
+    return out + esc(line.slice(last));
+  }
+  function hl(code, lang) { return code.split("\n").map(l => hlLine(l, lang)).join("\n"); }
+  function codeBox(code, lang) {
+    const box = document.createElement("div");
+    box.className = "codebox";
+    box.innerHTML = '<pre class="code"><code>' + hl(code, lang) + '</code></pre><span class="lang">' + (lang === "cpp" ? "C++" : "Java") + "</span>";
+    return box;
+  }
+  function dedent(s) {
+    const lines = s.replace(/^\s*\n/, "").replace(/\s+$/, "").split("\n");
+    const ind = Math.min(...lines.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
+    return lines.map(l => l.slice(ind)).join("\n");
+  }
+  document.querySelectorAll('script[type="text/x-code"]').forEach(s => s.replaceWith(codeBox(dedent(s.textContent), s.dataset.lang)));
+
+  /* ---------- tab ---------- */
+  const tabs = [...document.querySelectorAll("#tabs button")];
+  const panels = [...document.querySelectorAll("[data-panel]")];
+  function show(name, scroll) {
+    if (!panels.some(p => p.dataset.panel === name)) name = "lezioni";
+    tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.tab === name ? "true" : "false"));
+    panels.forEach(p => p.hidden = p.dataset.panel !== name);
+    S.tab = name; save();
+    if (scroll) window.scrollTo(0, 0);
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.tab, true)));
+  document.querySelectorAll(".toc a").forEach(a => a.addEventListener("click", () => show("lezioni")));
+
+  /* ---------- voto ---------- */
+  function voto(ok, tot) {
+    if (!tot) return "–";
+    const v = Math.max(1, Math.round(ok / tot * 20) / 2);
+    const i = Math.floor(v);
+    return (v - i) ? i + "½" : String(i);
+  }
+  function resultBar(el, key, total, extra) {
+    const vals = Object.values(S[key]);
+    const ok = vals.filter(v => v === true).length, done = vals.length;
+    el.innerHTML = "";
+    if (extra) extra.forEach(x => el.appendChild(x));
+    const reset = document.createElement("button");
+    reset.className = "btn quiet"; reset.textContent = "Ricomincia questa sezione";
+    reset.addEventListener("click", () => { S[key] = {}; delete S[key + "Pick"]; if (key === "debug") { delete S.debugMiss; delete S.debugFound; } if (key === "fill") { delete S.fillVals; delete S.fillTry; } save(); RENDER[key](); });
+    el.appendChild(reset);
+    const v = document.createElement("div");
+    v.className = "voto";
+    v.innerHTML = '<small>' + ok + " giuste su " + done + " · fatte " + done + "/" + total + '</small><span class="big">' + (done >= 3 ? voto(ok, done) : "–") + "</span>";
+    el.appendChild(v);
+  }
+
+  /* ---------- domanda a scelta multipla (quiz e cosa stampa) ---------- */
+  function mcCard(item, key, id, opts) {
+    const card = document.createElement("div");
+    card.className = "card";
+    const head = document.createElement("div");
+    head.className = "meta";
+    head.innerHTML = opts.meta || "";
+    if (opts.meta) card.appendChild(head);
+    if (item.title) { const h = document.createElement("h3"); h.textContent = item.title; card.appendChild(h); }
+    if (item.q) { const q = document.createElement("div"); q.className = "q"; q.innerHTML = item.q; card.appendChild(q); }
+    if (item.code) card.appendChild(codeBox(item.code, item.lang));
+    const box = document.createElement("div");
+    box.className = "opts" + (opts.mono ? " mono" : "");
+    const w = document.createElement("div");
+    const btns = item.o.map((txt, i) => {
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.innerHTML = '<span class="l">' + "ABCD"[i] + '</span><span></span>';
+      if (opts.mono) b.lastChild.textContent = txt; else b.lastChild.innerHTML = txt.replace(/&(?![a-z#]+;)/g, "&amp;").replace(/</g, "&lt;");
+      b.addEventListener("click", () => answer(i));
+      box.appendChild(b);
+      return b;
+    });
+    card.appendChild(box);
+    card.appendChild(w);
+    function paint(chosen) {
+      btns.forEach((b, i) => {
+        b.disabled = true;
+        if (i === item.a) b.classList.add("right");
+        else if (i === chosen) b.classList.add("wrong");
+      });
+      const ok = chosen === item.a;
+      card.classList.add(ok ? "ok" : "ko");
+      w.className = "w" + (ok ? "" : " ko");
+      w.innerHTML = '<b class="res">' + (ok ? "Giusto!" : "Sbagliato: la risposta è " + "ABCD"[item.a]) + "</b>" + item.w;
+    }
+    function answer(i) {
+      if (S[key][id] !== undefined) return;
+      S[key][id] = i === item.a;
+      S[key + "Pick"] = S[key + "Pick"] || {};
+      S[key + "Pick"][id] = i;
+      save(); paint(i);
+      if (opts.onAnswer) opts.onAnswer();
+    }
+    if (S[key][id] !== undefined) paint((S[key + "Pick"] || {})[id] ?? (S[key][id] ? item.a : -1));
+    return card;
+  }
+
+  const TOPIC = { base: "Basi", array: "Array", funzioni: "Funzioni", menu: "Menu", java: "Java", stringhe: "Stringhe", ricorsione: "Ricorsione", errori: "Errori" };
+  let quizFilter = "tutti", quizOrder = DATA.quiz.map((_, i) => i);
+
+  const RENDER = {
+    quiz() {
+      const list = document.getElementById("quiz-list");
+      list.innerHTML = "";
+      quizOrder.filter(i => quizFilter === "tutti" || DATA.quiz[i].t === quizFilter).forEach(i => {
+        const it = DATA.quiz[i];
+        list.appendChild(mcCard(it, "quiz", "q" + i, { meta: '<span class="tag">' + TOPIC[it.t] + "</span>", onAnswer: barQuiz }));
+      });
+      barQuiz();
+    },
+    output() {
+      const list = document.getElementById("output-list");
+      list.innerHTML = "";
+      DATA.output.forEach((it, i) => list.appendChild(mcCard(it, "output", "o" + i, { mono: true, meta: '<span class="tag ' + it.lang + '">' + (it.lang === "cpp" ? "C++" : "Java") + "</span>", onAnswer: () => resultBar(document.getElementById("output-bar"), "output", DATA.output.length) })));
+      resultBar(document.getElementById("output-bar"), "output", DATA.output.length);
+    },
+    debug() {
+      const list = document.getElementById("debug-list");
+      list.innerHTML = "";
+      DATA.debug.forEach((it, i) => list.appendChild(debugCard(it, "d" + i)));
+      resultBar(document.getElementById("debug-bar"), "debug", DATA.debug.length);
+    },
+    fill() {
+      const list = document.getElementById("fill-list");
+      list.innerHTML = "";
+      DATA.fill.forEach((it, i) => list.appendChild(fillCard(it, "f" + i)));
+      resultBar(document.getElementById("fill-bar"), "fill", DATA.fill.length);
+    },
+    es() {
+      const list = document.getElementById("es-list");
+      list.innerHTML = "";
+      DATA.esercizi.forEach((it, i) => list.appendChild(esCard(it, "e" + i)));
+      esBar();
+    }
+  };
+
+  function barQuiz() {
+    const bar = document.getElementById("quiz-bar");
+    const chips = ["tutti", ...Object.keys(TOPIC)].map(t => {
+      const c = document.createElement("button");
+      c.className = "chip"; c.textContent = t === "tutti" ? "Tutti" : TOPIC[t];
+      c.setAttribute("aria-pressed", quizFilter === t ? "true" : "false");
+      c.addEventListener("click", () => { quizFilter = t; RENDER.quiz(); });
+      return c;
+    });
+    const mix = document.createElement("button");
+    mix.className = "btn"; mix.textContent = "Mescola le domande";
+    mix.addEventListener("click", () => { quizOrder.sort(() => Math.random() - .5); RENDER.quiz(); });
+    resultBar(bar, "quiz", DATA.quiz.length, [...chips, mix]);
+  }
+
+  /* ---------- trova l'errore ---------- */
+  function debugCard(it, id) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = '<div class="meta"><span class="tag ' + it.lang + '">' + (it.lang === "cpp" ? "C++" : "Java") + "</span></div><h3></h3>";
+    card.querySelector("h3").textContent = it.title;
+    const goal = document.createElement("p");
+    goal.className = "goal"; goal.style.margin = "0";
+    goal.innerHTML = "<b>Problema:</b> " + it.goal;
+    card.appendChild(goal);
+    const lines = it.code.split("\n");
+    const badIdx = lines.map((l, i) => it.bad.some(b => l.includes(b)) ? i : -1).filter(i => i >= 0);
+    const wrap = document.createElement("div");
+    wrap.className = "lines";
+    const misses = new Set((S.debugMiss || {})[id] || []);
+    const btns = lines.map((l, i) => {
+      const b = document.createElement("button");
+      b.className = "line";
+      b.innerHTML = '<span class="ln">' + (i + 1) + "</span><code>" + (hlLine(l, it.lang) || " ") + "</code>";
+      b.setAttribute("aria-label", "Riga " + (i + 1));
+      b.addEventListener("click", () => pick(i));
+      wrap.appendChild(b);
+      return b;
+    });
+    card.appendChild(wrap);
+    const row = document.createElement("div"); row.className = "row";
+    const hint = document.createElement("span"); hint.style.color = "var(--muted)"; hint.style.fontSize = ".9rem";
+    const giveUp = document.createElement("button"); giveUp.className = "btn quiet"; giveUp.textContent = "Mostra la soluzione";
+    giveUp.addEventListener("click", () => { if (S.debug[id] === undefined) { S.debug[id] = false; save(); } reveal(); resultBar(document.getElementById("debug-bar"), "debug", DATA.debug.length); });
+    row.append(giveUp, hint);
+    card.appendChild(row);
+    const sol = document.createElement("div");
+    card.appendChild(sol);
+    function reveal() {
+      btns.forEach((b, i) => { b.disabled = true; if (badIdx.includes(i)) b.classList.add("hit"); });
+      misses.forEach(i => btns[i] && btns[i].classList.add("miss"));
+      const ok = S.debug[id] === true;
+      card.classList.add(ok ? "ok" : "ko");
+      row.hidden = true;
+      sol.innerHTML = "";
+      const w = document.createElement("div");
+      w.className = "w" + (ok ? "" : " ko");
+      w.innerHTML = '<b class="res">' + (ok ? "Trovato al primo colpo!" : ((S.debugFound || {})[id] ? "Trovato al " + (misses.size + 1) + "° tentativo (conta come errore)" : "Ecco l'errore")) + "</b>" + it.w;
+      sol.appendChild(w);
+      const lab = document.createElement("p"); lab.style.margin = "10px 0 6px"; lab.style.fontWeight = "700"; lab.textContent = "Correzione:";
+      sol.appendChild(lab);
+      sol.appendChild(codeBox(it.fix, it.lang));
+    }
+    function pick(i) {
+      if (S.debug[id] !== undefined) return;
+      if (badIdx.includes(i)) {
+        S.debug[id] = misses.size === 0;   // giusto solo se al primo tentativo
+        S.debugFound = S.debugFound || {}; S.debugFound[id] = true;
+        save(); reveal();
+        resultBar(document.getElementById("debug-bar"), "debug", DATA.debug.length);
+      } else {
+        misses.add(i);
+        S.debugMiss = S.debugMiss || {}; S.debugMiss[id] = [...misses]; save();
+        btns[i].classList.add("miss"); btns[i].disabled = true;
+        hint.textContent = "Non è questa riga. Riprova (conterà come errore).";
+      }
+    }
+    if (S.debug[id] !== undefined) reveal();
+    else misses.forEach(i => { btns[i].classList.add("miss"); btns[i].disabled = true; });
+    return card;
+  }
+
+  /* ---------- completa ---------- */
+  const norm = s => s.replace(/\s+/g, "");
+  function fillCard(it, id) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = '<div class="meta"><span class="tag ' + it.lang + '">' + (it.lang === "cpp" ? "C++" : "Java") + "</span></div><h3></h3>";
+    card.querySelector("h3").textContent = it.title;
+    const html = it.code.split("\n").map(line =>
+      line.split(/(\[\[\d+\]\])/).map(part => {
+        const m = part.match(/^\[\[(\d+)\]\]$/);
+        if (m) { const k = +m[1]; const len = Math.max(3, ...it.ans[k].map(a => a.length)) + 1; return '<input class="blank" data-k="' + k + '" id="' + id + "-" + k + '" style="width:' + len + 'ch" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Casella ' + (k + 1) + '">'; }
+        return hlLine(part, it.lang);
+      }).join("")).join("\n");
+    const box = document.createElement("div");
+    box.className = "codebox";
+    box.innerHTML = '<pre class="code"><code>' + html + '</code></pre><span class="lang">' + (it.lang === "cpp" ? "C++" : "Java") + "</span>";
+    card.appendChild(box);
+    const inputs = [...box.querySelectorAll("input")];
+    const row = document.createElement("div"); row.className = "row";
+    const check = document.createElement("button"); check.className = "btn solid"; check.textContent = "Controlla";
+    const showB = document.createElement("button"); showB.className = "btn quiet"; showB.textContent = "Mostra le risposte";
+    const msg = document.createElement("span"); msg.style.fontSize = ".9rem";
+    row.append(check, showB, msg);
+    card.appendChild(row);
+    const w = document.createElement("div");
+    card.appendChild(w);
+    const saved = (S.fillVals || {})[id] || {};
+    inputs.forEach(inp => { if (saved[inp.dataset.k]) inp.value = saved[inp.dataset.k]; inp.addEventListener("keydown", e => { if (e.key === "Enter") check.click(); }); });
+    function grade() {
+      let all = true;
+      inputs.forEach(inp => {
+        const ok = it.ans[+inp.dataset.k].some(a => norm(a) === norm(inp.value));
+        inp.classList.toggle("ok", ok); inp.classList.toggle("ko", !ok);
+        if (!ok) all = false;
+      });
+      return all;
+    }
+    function finish(ok) {
+      card.classList.add(ok ? "ok" : "ko");
+      w.className = "w" + (ok ? "" : " ko");
+      w.innerHTML = '<b class="res">' + (ok ? "Tutto giusto!" : "Risposte corrette inserite") + "</b>" + it.w;
+      inputs.forEach(i => i.readOnly = true);
+      check.hidden = true; showB.hidden = true; msg.textContent = "";
+    }
+    check.addEventListener("click", () => {
+      S.fillVals = S.fillVals || {}; S.fillVals[id] = {};
+      inputs.forEach(i => S.fillVals[id][i.dataset.k] = i.value);
+      const ok = grade();
+      S.fillTry = S.fillTry || {}; S.fillTry[id] = (S.fillTry[id] || 0) + 1;
+      if (ok) { if (S.fill[id] === undefined) S.fill[id] = S.fillTry[id] === 1; save(); finish(true); resultBar(document.getElementById("fill-bar"), "fill", DATA.fill.length); }
+      else { save(); msg.textContent = "Le caselle rosse sono sbagliate: correggi e riprova."; msg.style.color = "var(--red)"; }
+    });
+    showB.addEventListener("click", () => {
+      inputs.forEach(i => i.value = it.ans[+i.dataset.k][0]);
+      S.fillVals = S.fillVals || {}; S.fillVals[id] = {};
+      inputs.forEach(i => S.fillVals[id][i.dataset.k] = i.value);
+      if (S.fill[id] === undefined) S.fill[id] = false;
+      save(); grade(); finish(false); resultBar(document.getElementById("fill-bar"), "fill", DATA.fill.length);
+    });
+    if (S.fill[id] !== undefined) { grade(); finish(S.fill[id]); }
+    return card;
+  }
+
+  /* ---------- esercizi da scrivere ---------- */
+  const timers = {};
+  function esBar() {
+    const bar = document.getElementById("es-bar");
+    const done = Object.values(S.es).filter(Boolean).length;
+    bar.innerHTML = '<div class="voto" style="margin-left:0"><small>Esercizi completati</small><span class="big" style="color:var(--accent)">' + done + "/" + DATA.esercizi.length + "</span></div>";
+  }
+  function esCard(it, id) {
+    const card = document.createElement("div");
+    card.className = "card" + (S.es[id] ? " ok" : "");
+    card.innerHTML = '<div class="meta"><span class="tag ' + it.lang + '">' + (it.lang === "cpp" ? "C++" : "Java") + '</span><span>circa ' + it.min + ' minuti</span><label class="done"><input type="checkbox"> Fatto</label></div><h3></h3><div class="task"></div>';
+    card.querySelector("h3").textContent = it.title;
+    card.querySelector(".task").innerHTML = it.text;
+    const cb = card.querySelector('input[type="checkbox"]');
+    cb.id = id + "-done"; cb.checked = !!S.es[id];
+    cb.addEventListener("change", () => { S.es[id] = cb.checked; card.classList.toggle("ok", cb.checked); save(); esBar(); });
+    const ta = document.createElement("textarea");
+    ta.className = "mine"; ta.id = id + "-mine"; ta.spellcheck = false;
+    ta.setAttribute("aria-label", "La tua soluzione");
+    ta.placeholder = "Scrivi qui la tua soluzione (Tab inserisce 4 spazi)…";
+    ta.value = S.mine[id] || "";
+    ta.addEventListener("input", () => { S.mine[id] = ta.value; save(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey) { e.preventDefault(); const s = ta.selectionStart; ta.setRangeText("    ", s, ta.selectionEnd, "end"); S.mine[id] = ta.value; save(); }
+    });
+    card.appendChild(ta);
+    const row = document.createElement("div"); row.className = "row";
+    const tb = document.createElement("button"); tb.className = "btn timer";
+    const fmt = s => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+    tb.textContent = "Avvia timer " + fmt(it.min * 60);
+    tb.addEventListener("click", () => {
+      if (timers[id]) { clearInterval(timers[id]); timers[id] = null; tb.textContent = "Avvia timer " + fmt(it.min * 60); tb.classList.remove("done"); return; }
+      let left = it.min * 60;
+      tb.textContent = "Ferma · " + fmt(left);
+      timers[id] = setInterval(() => {
+        left--;
+        if (left <= 0) { clearInterval(timers[id]); timers[id] = null; tb.textContent = "Tempo scaduto!"; tb.classList.add("done"); return; }
+        tb.textContent = "Ferma · " + fmt(left);
+      }, 1000);
+    });
+    const hb = document.createElement("button"); hb.className = "btn quiet";
+    const sb = document.createElement("button"); sb.className = "btn quiet"; sb.textContent = "Mostra la soluzione";
+    row.append(tb, hb, sb);
+    card.appendChild(row);
+    const hints = document.createElement("div"); hints.style.display = "grid"; hints.style.gap = "8px";
+    card.appendChild(hints);
+    let shown = 0;
+    function updHint() { hb.textContent = shown < it.hints.length ? "Suggerimento " + (shown + 1) + "/" + it.hints.length : "Nessun altro suggerimento"; hb.disabled = shown >= it.hints.length; }
+    hb.addEventListener("click", () => {
+      if (shown >= it.hints.length) return;
+      const h = document.createElement("div"); h.className = "hint"; h.innerHTML = "<b>Suggerimento " + (shown + 1) + ":</b> " + it.hints[shown];
+      hints.appendChild(h); shown++; updHint();
+    });
+    updHint();
+    const solBox = document.createElement("div"); solBox.hidden = true;
+    solBox.appendChild(codeBox(it.sol, it.lang));
+    card.appendChild(solBox);
+    sb.addEventListener("click", () => { solBox.hidden = !solBox.hidden; sb.textContent = solBox.hidden ? "Mostra la soluzione" : "Nascondi la soluzione"; });
+    return card;
+  }
+
+  /* ---------- mini domande nelle lezioni ---------- */
+  document.querySelectorAll(".mini").forEach(el => {
+    const i = +el.dataset.q;
+    const card = mcCard(DATA.quiz[i], "quiz", "q" + i, { meta: '<span class="tag">Verifica veloce</span>', onAnswer: () => { RENDER.quiz(); } });
+    card.style.background = "var(--paper)";
+    el.replaceWith(card);
+  });
+
+  /* ---------- checklist ---------- */
+  document.querySelectorAll("#checklist input").forEach(cb => {
+    cb.checked = !!S.ck[cb.id];
+    cb.addEventListener("change", () => { S.ck[cb.id] = cb.checked; save(); });
+  });
+
+  /* ---------- punteggio globale ---------- */
+  function updateScore() {
+    const f = (k, tot) => { const v = Object.values(S[k]); return { ok: v.filter(x => x === true).length, done: v.length, tot }; };
+    const parts = { quiz: f("quiz", DATA.quiz.length), output: f("output", DATA.output.length), debug: f("debug", DATA.debug.length), fill: f("fill", DATA.fill.length) };
+    const es = Object.values(S.es).filter(Boolean).length;
+    Object.entries(parts).forEach(([k, p]) => { const el = document.getElementById("n-" + k); if (el) el.textContent = p.done + "/" + p.tot; });
+    document.getElementById("n-es").textContent = es + "/" + DATA.esercizi.length;
+    const ok = Object.values(parts).reduce((a, p) => a + p.ok, 0), done = Object.values(parts).reduce((a, p) => a + p.done, 0);
+    const tot = Object.values(parts).reduce((a, p) => a + p.tot, 0);
+    document.getElementById("score").innerHTML = '<span class="pill">Risposte date <b>' + done + "/" + tot + '</b></span><span class="pill">Giuste <b>' + ok + '</b></span><span class="pill">Voto medio <b>' + (done >= 3 ? voto(ok, done) : "–") + "</b></span>";
+  }
+
+  /* ---------- reset ---------- */
+  const rc = document.getElementById("reset-confirm");
+  document.getElementById("reset-all").addEventListener("click", () => rc.hidden = false);
+  document.getElementById("reset-no").addEventListener("click", () => rc.hidden = true);
+  document.getElementById("reset-yes").addEventListener("click", () => {
+    S = { quiz: {}, output: {}, debug: {}, fill: {}, es: {}, mine: {}, ck: {} };
+    save(); location.reload();
+  });
+
+  Object.values(RENDER).forEach(fn => fn());
+  const hash = (location.hash || "").slice(1);
+  const byHash = { quiz: 1, output: 1, debug: 1, fill: 1, esercizi: 1, verifica: 1, lezioni: 1 };
+  show(byHash[hash] ? hash : (S.tab || "lezioni"));
+  if (/^l\d+$/.test(hash)) { show("lezioni"); const t = document.getElementById(hash); if (t) t.scrollIntoView(); }
+  updateScore();
+})();
+</script>
+
+</body>
+</html>
